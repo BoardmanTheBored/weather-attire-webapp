@@ -80,7 +80,7 @@ Supports:
 - Covers all US states and territories (confirmed via the weather.gov active-alerts map, which includes Alaska, Hawaii, Puerto Rico, Guam, American Samoa) — fits the "US userbase only" scope.
 
 Limitations:
-- **Locations are specified by latitude/longitude only, not city name or ZIP.** A `/points/{lat},{lon}` endpoint converts coordinates to the NWS grid, but there's no built-in geocoding from a typed address or city name. Manual entry (a brief requirement) will need a separate geocoding step to turn user-typed text into coordinates — this is an open technical gap to resolve, not something api.weather.gov solves on its own.
+- **Locations are specified by latitude/longitude only, not city name or ZIP.** A `/points/{lat},{lon}` endpoint converts coordinates to the NWS grid, but there's no built-in geocoding from a typed address or city name. Manual entry (a brief requirement) needs a separate geocoding step to turn user-typed text into coordinates — not something api.weather.gov solves on its own (resolved by the Nominatim decision below, see Decisions: Geocoding).
 - Device location (browser geolocation) maps directly to this API with no extra step, since it already returns lat/lon.
 - Rate limits exist but aren't publicly disclosed; described as generous for typical use, with retry-after-5-seconds behavior if exceeded. Likely fine for a prototype with peer testing, but worth keeping in mind if usage spikes.
 
@@ -123,6 +123,8 @@ Record the selected weather provider, forecast range, recommendation categories 
 
 Once the recommendation categories are chosen, estimate the art needed: the character, three outfit variations per category, weather icons, and reminder icons. Use that estimate to choose the artwork approach.
 
+**Visual direction:** illustrated, rustic/vintage Americana style — grounded in the smokeybear.com and Library of Congress WPA poster references (see References) — rather than a corporate-modern look (e.g., material.io) or a young/cartoonish mascot tone (e.g., Duolingo).
+
 **Weather provider:** National Weather Service API (api.weather.gov). Free, open data, no API key currently required, 7-day forecast range, covers all US states and territories. Trade-off: requires a separate geocoding step for manual-entry locations since the API only accepts lat/lon (open item, see Weather and technical evidence).
 
 **Driving factors:** temperature, precipitation, and UV index.
@@ -134,9 +136,23 @@ Once the recommendation categories are chosen, estimate the art needed: the char
 
 **Recommendation categories:** 3 temperature tiers (Cold, Mild, Hot), each adjusted against a seasonal/regional baseline rather than a fixed universal threshold (see Additional feature, above), crossed with a precipitation modifier (Dry, Rain) — **6 categories total**: Cold-Dry, Cold-Rain, Mild-Dry, Mild-Rain, Hot-Dry, Hot-Rain.
 
-**Art estimate (~25–30 assets):** 1 mannequin character; shirt and pants as a single design each in 3 colors (3 + 3 assets, reused across all categories); shoes as 3 universal designs (not weather-specific); jacket (~4 assets) and hat (~3 assets) carrying the weather signal (none/light, light jacket or sun hat, raincoat or rain hood, heavy coat or beanie); plus ~5–8 weather condition icons and 3 reminder icons (umbrella, sunscreen, hydration).
+**Seasonal-baseline deviation threshold: ±7°F.** Today's forecast temperature is compared to the seasonal/regional baseline (see Additional feature, above): within 7°F of baseline = **Mild**; more than 7°F below baseline = **Cold**; more than 7°F above baseline = **Hot**.
 
-**Artwork approach:** AI-generated. Given the ~25–30 asset count is manageable but still meaningful for a 2-week solo build, AI-generated art is chosen over fully original illustration. Carries forward to `spec.md`/build: (1) the information screen must disclose that artwork is AI-generated, per the brief's "art credits or licenses" requirement; (2) generation needs a consistent style/prompt approach (and likely a fixed reference image or seed) across all ~30 assets so the character and clothing don't look stylistically mismatched piece to piece.
+**Art estimate (~24 assets):** 1 mannequin character; shirt and pants as a single design each in 3 colors (3 + 3 assets, reused across all categories); shoes as 3 universal designs (not weather-specific); jacket (~4 assets) and hat (~3 assets) carrying the weather signal (none/light, light jacket or sun hat, raincoat or rain hood, heavy coat or beanie); plus 4 weather condition icons (Clear/Sunny, Overcast, Rain, Snow — see Weather icon set, below) and 3 reminder icons (umbrella, sunscreen, hydration).
+
+**Artwork approach:** AI-generated. Given the ~24 asset count is manageable but still meaningful for a 2-week solo build, AI-generated art is chosen over fully original illustration. Carries forward to `spec.md`/build: (1) the information screen must disclose that artwork is AI-generated, per the brief's "art credits or licenses" requirement; (2) generation needs a consistent style/prompt approach (and likely a fixed reference image or seed) across all ~24 assets so the character and clothing don't look stylistically mismatched piece to piece.
+
+**Screen structure:** 2 screens total — one main screen and one information screen. The main screen carries the character/outfit, weather icon, written recommendation, reminders, and location/date controls built directly into it (e.g., tap the location or date to edit inline) rather than routing to separate selection screens, keeping navigation as simple as possible. The information screen covers creator, data source, recommendation methods/sources, privacy practices, and art credits, per the brief. Detailed layout for both (phone and laptop) is deferred to the hand-drawn designs in `spec.md`.
+
+**Deployment method:** GitHub Pages, as the brief recommends. This fits cleanly since the geocoding decision (Nominatim) already ruled out needing a backend/proxy — the app stays a plain static site. Verified directly (docs.github.com, 2026-10-04): a `github.io` subdomain is served over HTTPS automatically with no configuration, which satisfies the Geolocation API's secure-context requirement out of the box.
+
+**Weather icon set:** the NWS API returns 40+ distinct condition codes (api.weather.gov/icons, verified 2026-10-04), far more than needed for this app's purposes, so they're consolidated down to **4 icons**:
+1. **Clear/Sunny** — `skc`, `few`, `sct`
+2. **Overcast** — `bkn`, `ovc`
+3. **Rain** — `rain`, `rain_showers`, `rain_showers_hi`, `fzra`, `sleet`, mixed-rain combos, `tsra`, `tsra_sct`, `tsra_hi`, `tornado`, `hurricane`, `tropical_storm` (thunderstorm and severe weather folded into Rain rather than drawn separately)
+4. **Snow** — `snow`, `rain_snow`, `snow_sleet`, `blizzard`
+
+A **Windy** overlay/modifier applies on top of any of the above for `wind_*` variants, rather than being its own drawn icon. Rarer/unmapped codes (`fog`, `dust`, `smoke`, `haze`, etc.) aren't individually tracked — they fall back to the closest default (Overcast) without dedicated art.
 
 **Geocoding:** Nominatim (OpenStreetMap, nominatim.openstreetmap.org), chosen over the Census Geocoder so the app can stay a plain static site (e.g., GitHub Pages) with no backend or proxy needed, since Nominatim returns CORS headers that allow direct client-side calls. Consequences to carry into `spec.md` and `plan.md`: (1) manual entry can accept a simple city/state (or ZIP) rather than requiring a full street address; (2) must send a descriptive User-Agent/Referer header and stay within the 1-request/second usage policy (fine for a single user's occasional manual-entry lookups); (3) must not implement autocomplete-as-you-type (disallowed by Nominatim's policy) — geocode only on explicit submit; (4) must display attribution to OpenStreetMap contributors (ODbL license) somewhere in the app, likely the information screen alongside other credits.
 

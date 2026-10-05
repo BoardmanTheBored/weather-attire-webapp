@@ -52,6 +52,20 @@ Focus on the need rather than prescribing an interface or feature.
 
 Collect 5–10 reference images from relevant products and interfaces. Save each image in `reference/`, identify its source, and record a brief observation about what is useful, ineffective, or relevant to this project. Reference images are examples only; do not use them in the app.
 
+1. **`reference/WeatherGov_Ref.png`** — Source: weather.gov (National Weather Service), active alerts map page. Observation: data-dense and plain, with a color-coded alert map and a long legend. Useful for seeing how much raw weather data *could* be shown, but it's overwhelming for a quick morning glance — a good "what to avoid" example for the main screen.
+
+2. **`reference/Windy_Ref.png`** — Source: windy.com, wind/pressure layer view. Observation: visually rich, saturated color map with per-city temperature labels and a sidebar to switch data layers (wind, rain, temperature, etc.). The layer-toggle sidebar is a useful pattern, but the overall density is more than needed for a one-handed, at-a-glance app.
+
+3. **`reference/Stylebook_Ref.png`** — Source: Google Play Store listing for Stylebook. Observation: the "Looks" screen shows clothing items (sunglasses, dress, shoes, scarf) laid out flat, without a mannequin or avatar wearing them — a clean example of itemized clothing breakdown. The "Closet" grid view is also a useful reference for grouping clothing by category (e.g., "Tops").
+
+4. **`reference/Cladwell_Ref.png`** — Source: cladwell.com marketing page. Observation: the phone screenshot shows a "Recommended" outfit as flat-laid items (shirt, jeans, shoes) alongside a small weather readout (temperature, "Today") at the top of the screen. This is close to the project's direction — weather and recommended clothing in one view, without an illustrated character.
+
+5. **`reference/MaterialIO_Ref.png`** — Source: material.io homepage. Observation: example of strong default contrast — dark background with high-contrast white/light text and bold, saturated color-blocked cards that stay legible without relying on subtle shading. Useful as a model for building high contrast into the app's default look rather than treating it as an optional mode.
+
+6. **`reference/SmokeyBear_Ref.png`** — Source: smokeybear.com. Observation: strong example of a hand-illustrated, rustic/vintage character paired with short, practical tip cards (icon + heading + short text). Directly relevant as a tone reference for pairing a character with situational advice (e.g., umbrella, sunscreen reminders) without feeling like a corporate app.
+
+7. **`reference/LibraryofCongress_Ref.png`** — Source: loc.gov homepage. Observation: example of strong default contrast — black background with white and gold/yellow text and clear underlined links, legible without color being the only distinguishing cue. Reinforces that high contrast can be the default visual style rather than a secondary accessibility setting.
+
 ## Weather and technical evidence
 
 Record each useful source, what it supports, and important limitations. Research the weather variables, apparel guidance, reminders, accessibility, privacy, artwork, weather providers, and technical options needed for informed decisions.

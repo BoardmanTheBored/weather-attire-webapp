@@ -127,10 +127,9 @@ Once the recommendation categories are chosen, estimate the art needed: the char
 
 **Weather provider:** National Weather Service API (api.weather.gov). Free, open data, no API key currently required, 7-day forecast range, covers all US states and territories. Trade-off: requires a separate geocoding step for manual-entry locations since the API only accepts lat/lon (open item, see Weather and technical evidence).
 
-**Driving factors:** temperature, precipitation, and UV index.
+**Driving factors:** temperature and precipitation (UV index removed, see Revisions).
 
 **Reminder thresholds:**
-- **Sunscreen:** UV Index ≥ 3 (EPA's "Moderate to High" category and above).
 - **Hydration:** Heat Index ≥ 80°F (NWS's "Caution" category and above).
 - **Umbrella:** Probability of Precipitation (PoP) ≥ 40%.
 
@@ -138,7 +137,7 @@ Once the recommendation categories are chosen, estimate the art needed: the char
 
 **Seasonal-baseline deviation threshold: ±7°F.** Today's forecast temperature is compared to the seasonal/regional baseline (see Additional feature, above): within 7°F of baseline = **Mild**; more than 7°F below baseline = **Cold**; more than 7°F above baseline = **Hot**.
 
-**Art estimate (~24 assets):** 1 mannequin character; shirt and pants as a single design each in 3 colors (3 + 3 assets, reused across all categories); shoes as 3 universal designs (not weather-specific); jacket (~4 assets) and hat (~3 assets) carrying the weather signal (none/light, light jacket or sun hat, raincoat or rain hood, heavy coat or beanie); plus 4 weather condition icons (Clear/Sunny, Overcast, Rain, Snow — see Weather icon set, below) and 3 reminder icons (umbrella, sunscreen, hydration).
+**Art estimate (~23 assets):** 1 mannequin character; shirt and pants as a single design each in 3 colors (3 + 3 assets, reused across all categories); shoes as 3 universal designs (not weather-specific); jacket (~4 assets) and hat (~3 assets) carrying the weather signal (none/light, light jacket or sun hat, raincoat or rain hood, heavy coat or beanie); plus 4 weather condition icons (Clear/Sunny, Overcast, Rain, Snow — see Weather icon set, below) and 2 reminder icons (umbrella, hydration).
 
 **Artwork approach:** AI-generated. Given the ~24 asset count is manageable but still meaningful for a 2-week solo build, AI-generated art is chosen over fully original illustration. Carries forward to `spec.md`/build: (1) the information screen must disclose that artwork is AI-generated, per the brief's "art credits or licenses" requirement; (2) generation needs a consistent style/prompt approach (and likely a fixed reference image or seed) across all ~24 assets so the character and clothing don't look stylistically mismatched piece to piece.
 
@@ -159,6 +158,10 @@ A **Windy** overlay/modifier applies on top of any of the above for `wind_*` var
 ## Revisions
 
 Record new evidence or changed decisions and explain why they changed.
+
+**2026-10-04 — UV index and sunscreen reminder removed.** While drafting `spec.md`, a direct call to api.weather.gov for Austin (`/gridpoints/EWX/156,91` and its `/forecast`) showed the NWS API returns no UV index (raw data includes temperature, heat index, apparent temperature, humidity, wind, sky cover, PoP, but no UV). The brief requires one weather provider, so UV could not be added from another source. Decision: keep NWS, drop UV as a driving factor, and drop the sunscreen reminder. Remaining reminders: umbrella (PoP ≥ 40%) and hydration (Heat Index ≥ 80°F). The EPA UV source in "Weather and technical evidence" is retained as context only. Reminder icons drop from 3 to 2 (art estimate ~23).
+
+**2026-10-04 — Seasonal baseline now uses NOAA NCEI normals.** The "Chosen" approximation (lookup table or latitude + day-of-year model) is replaced by the NCEI 1991–2020 U.S. Climate Normals, monthly mean daily maximum temperature for the nearest station, interpolated by day of year. Evidence: tested directly, the station CSVs at ncei.noaa.gov/data/normals-monthly/1991-2020/access/ return `Access-Control-Allow-Origin: *` and include `MLY-TMAX-NORMAL`; 15,616 files exist and no light station index was found, so the data is bundled at build time as one JSON rather than fetched at runtime. This supersedes the earlier rejection of NCEI, which concerned the Climate Data Online API and its token, station matching and CORS. Baseline is therefore official data, not an approximation. The wording in "Additional feature" and the tier rule (±7°F of the normal high) still apply otherwise. Also: the Windy overlay uses a 19 mph wind-speed threshold (NWS Beaufort scale, force 5 "fresh breeze") instead of NWS wind codes.
 
 ## Approval
 

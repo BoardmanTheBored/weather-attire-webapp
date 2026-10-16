@@ -160,6 +160,16 @@ All items resolved. Approved decisions:
 After implementation or testing, record requirement changes and the evidence that prompted them. Update the screen drawings when a material layout or interaction changes.
 
 - 2026-10-04: UV index and sunscreen reminder removed (NWS provides no UV). Recorded in `research.md`.
+- 2026-10-15 (plan C1, live NWS check for Austin and Minneapolis, `scripts/check-nws.mjs`; browser `fetch` tested from the deployed origin). **Proposed, pending Developer approval where marked.**
+  - **Browser access:** `api.weather.gov` and Nominatim both answer browser `fetch` with HTTP 200 and no custom `User-Agent` (no R1/R2 change needed). Nominatim `countrycodes=us` returns an empty array for "Paris, France" (the "No US match found" case) and resolves a ZIP (55401).
+  - **Endpoints:** `/points/{lat},{lon}` gives `forecast`, `forecastGridData`, timezone, and `relativeLocation` (city, state). `/forecast` gives 14 half-day periods. `/gridpoints/{office}/{x},{y}` gives raw series.
+  - **Daily high:** each daytime period's `temperature` (°F, integer). **Gap:** after the afternoon, today's daytime period is gone and the first period is "Tonight". For today, take the high from gridpoint `maxTemperature` (°C, first entry covers today) and convert to °F. *Proposed:* use gridpoint `maxTemperature` for every date so one source covers all 7 days. Needs a check that it matches the period `temperature`.
+  - **PoP:** period `probabilityOfPrecipitation.value` (percent, may be null). Austin and Minneapolis today were 43 and 38 for "Friday", so the 39/40 threshold is realistic.
+  - **Wind:** period `windSpeed` is a string such as "5 to 15 mph" or "15 mph". Gridpoint `windSpeed` is numeric km/h. **Decision needed:** *proposed* the upper end of the period's range, converted to a number, compared to 19 mph (the gust-free wording matches the forecast text users see).
+  - **Heat index / wind chill:** only in gridpoint `heatIndex` and `windChill` (°C). They are sparse series: entries carry an ISO-8601 `validTime` interval (e.g. `PT1H`, `P6DT3H`), many have `value: null`, and gaps mean "not applicable". Treat null, missing, or no entry for the date as empty, as the spec already says. *Proposed:* for a date, take the maximum non-null `heatIndex` in the daytime hours; for wind chill, the minimum. Both convert °C to °F.
+  - **"Current" temperature:** gridpoint `temperature` series entry whose interval contains the current hour (°C, no nulls observed); `apparentTemperature` is also always populated and could back "Feels like", but the spec names heat index then wind chill, so it is not used.
+  - **Condition code:** period `icon` is a URL ending in a code (e.g. `.../tsra_hi,40?...`, `.../rain_showers,20/rain_showers,50`); the first segment (before the comma) is the code to group. `shortForecast` text is the display string.
+  - **Units:** gridpoint values are SI (°C, km/h). Convert in `nws.js` only; the rest of the app uses °F and mph.
 
 ## Approval
 

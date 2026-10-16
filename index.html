@@ -61,10 +61,58 @@
   </dialog>
 
   <!-- Information screen: reached via hash route #/info -->
-  <main id="screen-info" class="screen" aria-labelledby="info-title" hidden>
+  <main id="screen-info" class="screen info" aria-labelledby="info-title" hidden>
     <a href="#/" class="back-link">&larr; Back</a>
     <h1 id="info-title">About this app</h1>
-    <p>Information screen (placeholder)</p>
+    <p>Weather Attire suggests what to wear for a chosen day and place in the United States, based on the National Weather Service forecast.</p>
+
+    <section aria-labelledby="info-creator">
+      <h2 id="info-creator">Creator</h2>
+      <p>Created by Anthony Boardman.</p>
+    </section>
+
+    <section aria-labelledby="info-data">
+      <h2 id="info-data">Weather data</h2>
+      <p>Forecasts come from the <a href="https://www.weather.gov/documentation/services-web-api">National Weather Service (NWS) API</a> at api.weather.gov, a U.S. government service. You can look from today through day 7. Temperatures are in &deg;F, wind is in mph, and chance of precipitation is a percent.</p>
+      <p><strong>About &ldquo;Current.&rdquo;</strong> For today, the header shows the temperature labeled <strong>Current</strong>. That is the NWS forecast for the nearest hour, not a measured observation. Every other date is labeled <strong>Forecast</strong>.</p>
+    </section>
+
+    <section aria-labelledby="info-methods">
+      <h2 id="info-methods">How the outfit is chosen</h2>
+      <p>The suggestion is one example outfit, not safety or medical advice.</p>
+      <ul>
+        <li><strong>Cold, Mild or Hot.</strong> The day&rsquo;s forecast high is compared with the normal high for that date at the nearest weather station, from the <a href="https://www.ncei.noaa.gov/products/land-based-station/us-climate-normals">NOAA NCEI 1991&ndash;2020 U.S. Climate Normals</a> (monthly mean daily maximum, blended by day of year). Within 7&deg;F of normal is Mild, more than 7&deg;F below is Cold, and more than 7&deg;F above is Hot. The same forecast can therefore read differently in winter and summer, or in Austin and Minneapolis. The nearest station may sit at a different elevation than your spot.</li>
+        <li><strong>Rain.</strong> A chance of precipitation of 40% or more counts as rain. The NWS defines the <a href="https://forecast.weather.gov/glossary.php?word=probability%20of%20precipitation">probability of precipitation</a> as the chance that a given point gets at least 0.01 inch. The NWS publishes no official umbrella cutoff, so 40% is this app&rsquo;s choice.</li>
+        <li><strong>Jacket.</strong> Shown when it is Cold, rainy, or windy. It is heavy when Cold and light otherwise. This is based on the <a href="https://www.cdc.gov/winter-weather/prevention/index.html">CDC&rsquo;s winter weather guidance</a>, which recommends layers and a water-resistant coat.</li>
+        <li><strong>Hat.</strong> A rain hood when it is rainy. Otherwise a beanie when Cold (the CDC advises covering ears and other exposed areas with a hat, scarf, or gloves in the cold), a sun hat when Hot, and none when Mild. The sun hat is this app&rsquo;s choice.</li>
+        <li><strong>Windy.</strong> Wind of 19 mph or more, Beaufort force 5 or &ldquo;fresh breeze&rdquo; on the <a href="https://www.weather.gov/mfl/beaufort">NWS Beaufort scale</a>, shows the Windy label and a light jacket. For a forecast range such as &ldquo;5 to 15 mph,&rdquo; the upper number is used.</li>
+        <li><strong>Umbrella reminder.</strong> Shown when the chance of precipitation is 40% or more.</li>
+        <li><strong>Hydration reminder.</strong> Shown when the <a href="https://www.weather.gov/ama/heatindex">NWS heat index</a> is 80&deg;F or higher, the start of the NWS &ldquo;Caution&rdquo; category. The NWS publishes no hydration-specific threshold, so using it is this app&rsquo;s choice.</li>
+        <li><strong>Feels like.</strong> Shows the day&rsquo;s highest heat index or lowest wind chill from the NWS, labeled as such. When neither is available it shows the plain temperature.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="info-privacy">
+      <h2 id="info-privacy">Privacy</h2>
+      <ul>
+        <li>A city or ZIP code you type is sent to Nominatim (OpenStreetMap) only when you press Search. Its operators log your IP address and the query, as described in the <a href="https://osmfoundation.org/wiki/Privacy_Policy">OpenStreetMap Foundation privacy policy</a>.</li>
+        <li>The coordinates of your place are sent to the National Weather Service to get the forecast. Like any website, it can see your IP address.</li>
+        <li>Your device location is read only if you press &ldquo;Use my location&rdquo; and allow it in your browser. Those coordinates go to the NWS, not to Nominatim. If you decline, you can type a place instead.</li>
+        <li>Only your most recent location (its name and coordinates) is saved, in this browser&rsquo;s local storage, so the app opens there next time. Nothing else is saved. The outfit and reminder variations you see are kept in memory for the visit only. To remove the saved location, clear this site&rsquo;s data in your browser.</li>
+        <li>There are no accounts, ads, or analytics, and no server run by the creator. This site is hosted on GitHub Pages, and GitHub may log visits under its <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">privacy statement</a>.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="info-art">
+      <h2 id="info-art">Art credits</h2>
+      <!-- Plan A4/C10: replace this paragraph with the generation tool, date, and license once the art is added. -->
+      <p id="art-credit">The character, clothing, and icons are AI-generated artwork. Simple placeholder drawings stand in until that artwork is added; its tool and license will be listed here.</p>
+    </section>
+
+    <section aria-labelledby="info-maps">
+      <h2 id="info-maps">Location search data</h2>
+      <p>Place search uses Nominatim with data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, available under the <a href="https://opendatacommons.org/licenses/odbl/">Open Database License (ODbL)</a>, following the <a href="https://operations.osmfoundation.org/policies/nominatim/">Nominatim usage policy</a>. Weather data: National Weather Service.</p>
+    </section>
   </main>
 </body>
 </html>

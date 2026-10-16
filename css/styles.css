@@ -39,7 +39,15 @@ body {
 .screen[hidden],
 #screen-main[hidden] { display: none !important; }
 
+/* Information screen: one readable column on phone and laptop. */
 #screen-info { padding: 16px; }
+.info { width: 100%; max-width: 44rem; margin: 0 auto; font-size: 17px; line-height: 1.55; }
+.info h1 { margin: 8px 0 12px; font-size: 28px; }
+.info h2 { margin: 28px 0 8px; font-size: 21px; }
+.info p { margin: 0 0 12px; }
+.info ul { margin: 0; padding-left: 22px; }
+.info li { margin-bottom: 10px; }
+.info a { overflow-wrap: anywhere; }
 
 a { color: var(--link); }
 

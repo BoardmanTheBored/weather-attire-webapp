@@ -1,8 +1,10 @@
-/* High-contrast default, phone-first. Laptop layout (>= 1024px) added in checkpoint C8. */
+/* High-contrast default, phone-first. Laptop layout (>= 1024px) is added in checkpoint C8. */
 :root {
   --bg: #ffffff;
   --text: #111111;
   --link: #0b3d91;
+  --border: #111111;
+  --panel: #f4f4f4;
   --target: 44px; /* minimum touch target (R11) */
 }
 
@@ -11,21 +13,161 @@
 body {
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 16px;
   background: var(--bg);
   color: var(--text);
   line-height: 1.4;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 .screen {
   min-height: 100vh;
-  padding: 16px;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
 
 .screen[hidden] { display: none; }
 
+#screen-info { padding: 16px; }
+
 a { color: var(--link); }
+
+:focus-visible {
+  outline: 3px solid var(--link);
+  outline-offset: 2px;
+}
+
+/* ---------- Header: icons, then one tappable block with location, date and temperature ---------- */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 3px solid var(--border);
+}
+
+.header-icons {
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 48px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.icon-item img { width: 40px; height: 40px; }
+
+.header-block {
+  flex: 1;
+  min-height: var(--target);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "loc temp" "date temp";
+  column-gap: 8px;
+  align-items: center;
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.header-location { grid-area: loc; font-weight: 700; font-size: 18px; overflow-wrap: anywhere; }
+.header-date { grid-area: date; font-size: 14px; }
+.header-temp { grid-area: temp; font-weight: 800; font-size: 28px; }
+
+/* ---------- Body: character left, Weather Breakdown right ---------- */
+.body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 12px;
+}
+
+.character-area { min-width: 0; }
+
+.character {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 2;
+}
+
+/* Every layer shares the same canvas so overlays line up on the mannequin. */
+.character img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.recommendation { margin: 8px 0 0; font-size: 14px; }
+
+.breakdown {
+  min-width: 0;
+  background: var(--panel);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.breakdown h2 { margin: 0 0 8px; font-size: 18px; }
+
+.status-message { margin: 0; font-weight: 600; }
+
+.rows { margin: 0; }
+.row { margin-bottom: 8px; }
+.row dt { font-size: 14px; font-weight: 700; }
+.row dd { margin: 0; overflow-wrap: anywhere; }
+
+.reminders { list-style: none; margin: 12px 0 0; padding: 0; }
+.reminder {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 6px;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-weight: 600;
+}
+.reminder img { width: 32px; height: 32px; flex: none; }
+
+.source { margin: 12px 0 0; font-size: 14px; }
+
+/* ---------- Footer, in thumb reach ---------- */
+.footer {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  padding: 6px 12px;
+  background: var(--bg);
+  border-top: 3px solid var(--border);
+}
 
 .footer-link,
 .back-link {
@@ -34,5 +176,3 @@ a { color: var(--link); }
   min-height: var(--target);
   min-width: var(--target);
 }
-
-.footer { margin-top: auto; }

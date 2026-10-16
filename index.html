@@ -4,14 +4,29 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Weather Attire</title>
+  <link rel="icon" href="data:,">
   <link rel="stylesheet" href="css/styles.css">
   <script type="module" src="js/main.js"></script>
 </head>
 <body>
-  <!-- Main screen: filled in by render.js from the recommendation state -->
+  <!-- Main screen: every part below is filled in by render.js from the recommendation state -->
   <main id="screen-main" class="screen" aria-labelledby="main-title">
-    <h1 id="main-title">Weather Attire</h1>
-    <p>Main screen (placeholder)</p>
+    <h1 id="main-title" class="visually-hidden">Weather Attire</h1>
+
+    <header class="header">
+      <ul id="header-icons" class="header-icons"></ul>
+      <!-- Opens the location and date sheet (checkpoint C6) -->
+      <button id="header-block" class="header-block" type="button" aria-haspopup="dialog"></button>
+    </header>
+
+    <div class="body">
+      <section id="character-area" class="character-area" aria-label="Suggested outfit"></section>
+      <section class="breakdown" aria-labelledby="breakdown-title">
+        <h2 id="breakdown-title">Weather Breakdown</h2>
+        <div id="breakdown-content" aria-live="polite"></div>
+      </section>
+    </div>
+
     <footer class="footer">
       <a href="#/info" class="footer-link">About this app</a>
     </footer>

@@ -136,6 +136,7 @@ a { color: var(--link); }
 .breakdown h2 { margin: 0 0 8px; font-size: 18px; }
 
 .status-message { margin: 0; font-weight: 600; }
+.retry { margin-top: 12px; }
 
 .rows { margin: 0; }
 .row { margin-bottom: 8px; }

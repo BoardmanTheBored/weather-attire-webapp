@@ -16,7 +16,7 @@ export async function geocode(query, fetchFn = fetch) {
     if (!response.ok) throw new Error(String(response.status));
     results = await response.json();
   } catch {
-    throw new ServiceError('Could not reach the location service');
+    throw new ServiceError("Couldn't reach the location service");
   }
 
   if (!Array.isArray(results) || results.length === 0) throw new NoMatchError();

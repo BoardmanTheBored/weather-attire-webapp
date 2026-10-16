@@ -6,6 +6,7 @@ import { parseWindMph } from './recommend.js';
 
 const API = 'https://api.weather.gov';
 const TIMEOUT_MS = 10000;
+const WEATHER_DOWN = "Couldn't reach the weather service"; // spec: Error and loading states
 const DAYS_OFFERED = 7;
 
 async function getJson(url, fetchFn) {
@@ -15,17 +16,17 @@ async function getJson(url, fetchFn) {
   try {
     response = await fetchFn(url, { signal: controller.signal });
   } catch {
-    throw new ServiceError('Could not reach the weather service');
+    throw new ServiceError(WEATHER_DOWN);
   } finally {
     clearTimeout(timer);
   }
   // NWS answers 404 for points it does not cover (outside the US).
   if (response.status === 404) throw new NoMatchError();
-  if (!response.ok) throw new ServiceError(`Weather service returned ${response.status}`);
+  if (!response.ok) throw new ServiceError(WEATHER_DOWN);
   try {
     return await response.json();
   } catch {
-    throw new ServiceError('Weather service returned unreadable data');
+    throw new ServiceError(WEATHER_DOWN);
   }
 }
 

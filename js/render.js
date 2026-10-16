@@ -74,7 +74,12 @@ function renderBreakdown(view) {
 
   if (view.kind === 'loading') return panel.append(message('Loading forecast…'));
   if (view.kind === 'empty') return panel.append(message('Tap the header to choose a location.'));
-  if (view.kind === 'error') return panel.append(message(view.message ?? "Couldn't reach the weather service"));
+  if (view.kind === 'error') {
+    return panel.append(
+      message(view.message),
+      el('button', { className: 'btn retry', text: 'Retry', attrs: { id: 'retry-button', type: 'button' } }),
+    );
+  }
   if (state.status === 'no-temperature') {
     return panel.append(message('No temperature forecast is available for this date, so there is no outfit suggestion.'));
   }

@@ -35,17 +35,22 @@ route({ moveFocus: false });
 
 // ---------- Main screen data flow: location -> NWS -> state -> render ----------
 const variation = createVariationStore();
-const app = { location: null, bundle: null, dateKey: null };
+// location: { name, lat?, lon? }. bundle: NWS data for 7 days. error: { message, retry } when a
+// service failed. Everything on screen is drawn from this object.
+const app = { location: null, bundle: null, dateKey: null, error: null };
 const sheet = { notice: '', busy: false };
 let requestId = 0; // a newer request makes an older one's result stale
 let stationsPromise = null;
 
 class PermissionDeniedError extends Error {}
 
+// The device's own calendar day, used for the header while the location's time zone is not yet known.
+const deviceToday = () => localDateKey(Date.now(), Intl.DateTimeFormat().resolvedOptions().timeZone);
+
 function ensureStations() {
-  stationsPromise ??= loadStations().catch((error) => {
+  stationsPromise ??= loadStations().catch(() => {
     stationsPromise = null; // allow a retry
-    throw error;
+    throw new ServiceError("Couldn't load the seasonal temperature data");
   });
   return stationsPromise;
 }
@@ -60,12 +65,20 @@ function drawSheet() {
   });
 }
 
-// Everything on screen is redrawn from `app`; nothing else decides what shows.
+function updateSheet(patch) {
+  Object.assign(sheet, patch);
+  drawSheet();
+}
+
 async function redraw() {
-  const { location: place, bundle, dateKey } = app;
-  if (!place) renderMain({ kind: 'empty' });
-  else if (!bundle) renderMain({ kind: 'loading', location: place });
-  else {
+  const { location: place, bundle, dateKey, error } = app;
+  if (error) {
+    renderMain({ kind: 'error', location: place, dateKey: deviceToday(), message: error.message });
+  } else if (!place) {
+    renderMain({ kind: 'empty' });
+  } else if (!bundle) {
+    renderMain({ kind: 'loading', location: place, dateKey: deviceToday() });
+  } else {
     const stations = await ensureStations();
     const state = buildState({ location: place, dateKey, bundle, stations, variation });
     renderMain({ kind: 'state', location: place, dateKey, state });
@@ -73,9 +86,17 @@ async function redraw() {
   drawSheet();
 }
 
-function updateSheet(patch) {
-  Object.assign(sheet, patch);
-  drawSheet();
+// Service failure: clear the outfit and show the message with Retry in the breakdown area.
+function showFailure(error, name, retry) {
+  const message = error instanceof ServiceError ? error.message : "Couldn't reach the weather service";
+  Object.assign(app, { location: { name }, bundle: null, dateKey: null, error: { message, retry } });
+  return redraw();
+}
+
+// Show the loading state for a place (location and date in the header, no outfit).
+function showLoading(name) {
+  Object.assign(app, { location: { name }, bundle: null, dateKey: null, error: null });
+  return redraw();
 }
 
 // Fetches weather for coordinates and names the place from NWS (city, state).
@@ -87,53 +108,50 @@ async function fetchPlace(lat, lon) {
 
 // Makes a fetched place current (a new location always starts on today) and remembers it (R4).
 function applyPlace({ bundle, place }) {
-  app.location = place;
-  app.bundle = bundle;
-  app.dateKey = localDateKey(Date.now(), bundle.timeZone);
+  Object.assign(app, { location: place, bundle, dateKey: localDateKey(Date.now(), bundle.timeZone), error: null });
   saveLocation(place);
   return redraw();
 }
 
 async function loadSavedLocation(place) {
   const id = ++requestId;
-  app.location = place;
-  app.bundle = null;
-  redraw();
+  showLoading(place.name);
   try {
     const result = await fetchPlace(place.lat, place.lon);
     if (id === requestId) await applyPlace(result);
   } catch (error) {
-    // Full error and retry handling arrives in checkpoint C7.
-    if (id !== requestId) return;
-    const message = error instanceof ServiceError ? error.message : "Couldn't reach the weather service";
-    renderMain({ kind: 'error', location: place, message });
+    if (id === requestId) await showFailure(error, place.name, () => loadSavedLocation(place));
   }
 }
 
-// Shared by Search and "Use my location". On failure the sheet stays open with a message and
-// the previous location is kept.
-async function changeLocation(lookup) {
+// Shared by Search and "Use my location". Unmatched and denied show inline in the sheet and keep
+// the previous location. A service failure closes the sheet and shows the error with Retry.
+async function changeLocation(lookup, label, { fromRetry = false } = {}) {
   const id = ++requestId;
   updateSheet({ busy: true, notice: '' });
+  if (fromRetry) await showLoading(label);
   try {
     const { lat, lon } = await lookup();
     const result = await fetchPlace(lat, lon);
     if (id !== requestId) return;
-    updateSheet({ busy: false, notice: '' });
+    updateSheet({ busy: false });
     await applyPlace(result);
     closeSheet();
   } catch (error) {
     if (id !== requestId) return;
-    updateSheet({ busy: false, notice: messageFor(error) });
-    if (error instanceof PermissionDeniedError) focusSearchField();
+    updateSheet({ busy: false });
+    if (error instanceof PermissionDeniedError) {
+      updateSheet({ notice: 'Location permission denied. Type a city or ZIP instead' });
+      focusSearchField();
+    } else if (error instanceof NoMatchError) {
+      updateSheet({ notice: 'No US match found' });
+    } else if (error instanceof ServiceError) {
+      await showFailure(error, label, () => changeLocation(lookup, label, { fromRetry: true }));
+      closeSheet();
+    } else {
+      updateSheet({ notice: "Couldn't find your location. Type a city or ZIP instead" });
+    }
   }
-}
-
-function messageFor(error) {
-  if (error instanceof PermissionDeniedError) return 'Location permission denied. Type a city or ZIP instead';
-  if (error instanceof NoMatchError) return 'No US match found';
-  if (error instanceof ServiceError) return "Couldn't reach the location service. Try again.";
-  return "Couldn't find your location. Type a city or ZIP instead";
 }
 
 function devicePosition() {
@@ -152,16 +170,21 @@ $('header-block').addEventListener('click', openSheet);
 $('sheet-close').addEventListener('click', closeSheet);
 $('search-form').addEventListener('submit', (event) => {
   event.preventDefault();
-  if (!sheet.busy) changeLocation(() => geocode(readSearchQuery()));
+  if (sheet.busy) return;
+  const query = readSearchQuery().trim();
+  changeLocation(() => geocode(query), query);
 });
 $('use-location').addEventListener('click', () => {
-  if (!sheet.busy) changeLocation(devicePosition);
+  if (!sheet.busy) changeLocation(devicePosition, 'Your location');
 });
 $('date-options').addEventListener('change', (event) => {
   if (event.target.name !== 'date') return;
   app.dateKey = event.target.value;
   redraw();
   closeSheet();
+});
+$('breakdown-content').addEventListener('click', (event) => {
+  if (event.target.id === 'retry-button') app.error?.retry();
 });
 $('sheet').addEventListener('keydown', trapSheetFocus);
 // A tap on the dimmed backdrop (the dialog element itself) closes the sheet.

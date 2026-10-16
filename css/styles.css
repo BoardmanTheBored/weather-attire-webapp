@@ -1,0 +1,38 @@
+/* High-contrast default, phone-first. Laptop layout (>= 1024px) added in checkpoint C8. */
+:root {
+  --bg: #ffffff;
+  --text: #111111;
+  --link: #0b3d91;
+  --target: 44px; /* minimum touch target (R11) */
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.screen {
+  min-height: 100vh;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.screen[hidden] { display: none; }
+
+a { color: var(--link); }
+
+.footer-link,
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target);
+  min-width: var(--target);
+}
+
+.footer { margin-top: auto; }

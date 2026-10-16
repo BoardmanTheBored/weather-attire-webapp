@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Weather Attire</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <!-- Main screen: filled in by render.js from the recommendation state -->
+  <main id="screen-main" class="screen" aria-labelledby="main-title">
+    <h1 id="main-title">Weather Attire</h1>
+    <p>Main screen (placeholder)</p>
+    <footer class="footer">
+      <a href="#/info" class="footer-link">About this app</a>
+    </footer>
+  </main>
+
+  <!-- Information screen: reached via hash route #/info -->
+  <main id="screen-info" class="screen" aria-labelledby="info-title" hidden>
+    <a href="#/" class="back-link">&larr; Back</a>
+    <h1 id="info-title">About this app</h1>
+    <p>Information screen (placeholder)</p>
+  </main>
+</body>
+</html>

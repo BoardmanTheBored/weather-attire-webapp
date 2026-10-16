@@ -79,7 +79,7 @@ Ongoing rules: test and fix each checkpoint against `spec.md` before starting th
 - [ ] A4. Record the tool, date, and license for the info screen (result: credit text ready)
 
 **Code track**
-- [ ] C0. **Skeleton and early deploy:** folder structure, `index.html` with two empty screens, hash routing, GitHub Pages enabled. Check: public HTTPS URL loads; the info route and back button work.
+- [x] C0. **Skeleton and early deploy:** folder structure, `index.html` with two empty screens, hash routing, GitHub Pages enabled. Check: public HTTPS URL loads; the info route and back button work.
 - [ ] C1. **Live data check:** script that fetches real NWS responses for Austin and a northern city; record which fields hold high temp, PoP, heat index, wind chill, wind, short forecast, icon code, and the nearest-hour value; note empty values. Check: findings written to `spec.md` Revisions; browser `fetch` to NWS and Nominatim succeeds without a custom `User-Agent`.
 - [ ] C2. **Baseline data:** `scripts/build-normals.mjs` produces `data/normals.json`; `baseline.js` returns the interpolated normal high for a lat/lon and date. Check: file size reported; Austin and Minneapolis give plausible values for January and July; AK/HI/PR lookups work.
 - [ ] C3. **Rules engine (pure, tested):** `recommend.js` and `variation.js` with `node --test`. Check: boundaries at ±7°F, PoP 39/40, heat index 79/80, wind 18/19, empty heat index, every row of the jacket/hat table, condition-code grouping with Overcast fallback, and variation keyed by date (same on return, cleared on location change, independent draws).
@@ -124,6 +124,8 @@ Before testing, record the purpose, a few realistic tasks, non-leading prompts, 
 ## Revisions
 
 Record material plan changes and why they were made.
+
+- 2026-10-15: Repo made public (GitHub Pages is unavailable on private repos on the free plan). Live URL: https://boardmanthebored.github.io/weather-attire-webapp/. C0 done.
 
 ## Saving transcripts
 

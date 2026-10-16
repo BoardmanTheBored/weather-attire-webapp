@@ -120,6 +120,50 @@ export function renderMain(view) {
   renderBreakdown(view);
 }
 
+// ---------- 7-day strip (laptop layout) ----------
+
+// days: [{ date, status, tier, condition, high }] from summarizeDays; empty when there is no forecast.
+export function renderWeek({ days, selected, todayKey }) {
+  const strip = $('week-strip');
+  // Rebuilding the buttons would drop keyboard focus, so remember which day had it.
+  const focusedDate = strip.contains(document.activeElement) ? document.activeElement.dataset.date : null;
+  strip.replaceChildren();
+  for (const day of days) {
+    const [weekday, ...rest] = formatDate(day.date).split(', ');
+    const ok = day.status === 'ok';
+    const summary = ok ? `${day.tier}, ${day.condition}, high ${day.high}°F` : 'no temperature forecast';
+    const details = ok
+      ? [
+          el('ul', { className: 'week-icons' }, [
+            labeledIcon('thermometer', day.tier),
+            labeledIcon(CONDITION_ICONS[day.condition], day.condition),
+          ]),
+          el('span', { className: 'week-high', text: `${day.high}°F` }),
+        ]
+      : [el('span', { className: 'week-none', text: 'No data' })];
+    strip.append(
+      el(
+        'button',
+        {
+          className: 'week-day',
+          attrs: {
+            type: 'button',
+            'data-date': day.date,
+            'aria-pressed': String(day.date === selected),
+            'aria-label': `${formatDate(day.date)}: ${summary}`,
+          },
+        },
+        [
+          el('span', { className: 'week-day-name', text: day.date === todayKey ? 'Today' : weekday }),
+          el('span', { className: 'week-day-date', text: rest.join(', ') }),
+          ...details,
+        ],
+      ),
+    );
+  }
+  if (focusedDate) strip.querySelector(`[data-date="${focusedDate}"]`)?.focus();
+}
+
 // ---------- Location and date sheet ----------
 
 // dates: ["YYYY-MM-DD", ...]; notice is the inline message (e.g. "No US match found")

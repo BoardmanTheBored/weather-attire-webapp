@@ -35,7 +35,9 @@ body {
   flex-direction: column;
 }
 
-.screen[hidden] { display: none; }
+/* Id-level rules such as #screen-main { display: grid } would otherwise beat the hidden attribute. */
+.screen[hidden],
+#screen-main[hidden] { display: none !important; }
 
 #screen-info { padding: 16px; }
 
@@ -264,6 +266,9 @@ a { color: var(--link); }
 .date-chip input:checked + .date-chip-face .date-chip-day::before { content: "\2713\00a0"; }
 .date-chip input:focus-visible + .date-chip-face { outline: 3px solid var(--link); outline-offset: 2px; }
 
+/* ---------- 7-day strip: laptop only ---------- */
+.week-strip { display: none; }
+
 /* Laptop: the same controls as a centered dialog. */
 @media (min-width: 1024px) {
   .sheet {
@@ -272,4 +277,84 @@ a { color: var(--link); }
     border-bottom: 3px solid var(--border);
     border-radius: 16px;
   }
+}
+
+/* ---------- Laptop layout (>= 1024px): three columns, 7-day strip, same data and controls ---------- */
+@media (min-width: 1024px) {
+  #screen-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr) minmax(0, 1.1fr);
+    grid-template-rows: auto auto auto;
+    column-gap: 24px;
+    align-content: start;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px 24px 0;
+  }
+
+  /* The body's two sections become grid items so the header can sit between them. */
+  .body { display: contents; }
+
+  .character-area { grid-column: 1; grid-row: 1; }
+  .header { grid-column: 2; grid-row: 1; }
+  .breakdown { grid-column: 3; grid-row: 1; align-self: start; }
+  .week-strip { grid-column: 1 / -1; grid-row: 2; }
+  /* The sticky footer is a phone thumb-reach aid; on laptop it flows after the strip. */
+  .footer { grid-column: 1 / -1; grid-row: 3; position: static; }
+
+  .character {
+    height: min(68vh, 720px);
+    width: auto;
+    margin: 0 auto;
+  }
+  .recommendation { font-size: 16px; text-align: center; }
+
+  /* Middle column: location, date and temperature, then the thermometer and weather icons stacked. */
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 0;
+    border-bottom: 0;
+    border-left: 3px solid var(--border);
+    border-right: 3px solid var(--border);
+    padding: 0 16px;
+  }
+  .header-block { order: 1; flex: none; grid-template-columns: 1fr; grid-template-areas: "loc" "date" "temp"; row-gap: 4px; }
+  .header-temp { font-size: 40px; }
+  .header-icons { order: 2; flex-direction: column; align-items: center; gap: 16px; }
+  .header-icons .icon-item { font-size: 16px; }
+  .header-icons .icon-item img { width: 72px; height: 72px; }
+
+  .week-strip {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 8px;
+    margin: 24px 0 16px;
+  }
+  .week-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 4px;
+    min-height: var(--target);
+    font: inherit;
+    color: var(--text);
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .week-day-name { font-weight: 700; }
+  .week-day-date { font-size: 14px; }
+  .week-icons { display: flex; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .week-icons .icon-item { min-width: 0; font-size: 13px; }
+  .week-icons .icon-item img { width: 32px; height: 32px; }
+  .week-high { font-weight: 800; font-size: 18px; }
+  .week-none { font-size: 14px; }
+  /* Selected day: thick border, inverted colors and a check mark, not color alone. */
+  .week-day[aria-pressed="true"] { color: #fff; background: var(--text); border-width: 4px; }
+  .week-day[aria-pressed="true"] .icon-item img { filter: invert(1); }
+  .week-day[aria-pressed="true"] .week-day-name::before { content: "\2713\00a0"; }
 }

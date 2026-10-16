@@ -4,9 +4,9 @@ import { NoMatchError, ServiceError } from './errors.js';
 import { geocode } from './geocode.js';
 import { dateOptions, fetchWeather, localDateKey } from './nws.js';
 import {
-  closeSheet, focusSearchField, openSheet, readSearchQuery, renderMain, renderSheet, trapSheetFocus,
+  closeSheet, focusSearchField, openSheet, readSearchQuery, renderMain, renderSheet, renderWeek, trapSheetFocus,
 } from './render.js';
-import { buildState } from './state.js';
+import { buildState, summarizeDays } from './state.js';
 import { loadLocation, saveLocation } from './storage.js';
 import { createVariationStore } from './variation.js';
 
@@ -72,6 +72,7 @@ function updateSheet(patch) {
 
 async function redraw() {
   const { location: place, bundle, dateKey, error } = app;
+  let week = [];
   if (error) {
     renderMain({ kind: 'error', location: place, dateKey: deviceToday(), message: error.message });
   } else if (!place) {
@@ -82,7 +83,9 @@ async function redraw() {
     const stations = await ensureStations();
     const state = buildState({ location: place, dateKey, bundle, stations, variation });
     renderMain({ kind: 'state', location: place, dateKey, state });
+    week = summarizeDays({ location: place, bundle, stations });
   }
+  renderWeek({ days: week, selected: dateKey, todayKey: bundle ? localDateKey(Date.now(), bundle.timeZone) : null });
   drawSheet();
 }
 
@@ -182,6 +185,12 @@ $('date-options').addEventListener('change', (event) => {
   app.dateKey = event.target.value;
   redraw();
   closeSheet();
+});
+$('week-strip').addEventListener('click', (event) => {
+  const day = event.target.closest('.week-day');
+  if (!day) return;
+  app.dateKey = day.dataset.date;
+  redraw();
 });
 $('breakdown-content').addEventListener('click', (event) => {
   if (event.target.id === 'retry-button') app.error?.retry();

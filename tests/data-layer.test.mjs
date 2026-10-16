@@ -6,7 +6,7 @@ import {
 } from '../js/nws.js';
 import { geocode } from '../js/geocode.js';
 import { loadLocation, saveLocation } from '../js/storage.js';
-import { buildState } from '../js/state.js';
+import { buildState, summarizeDays } from '../js/state.js';
 import { createVariationStore } from '../js/variation.js';
 import { NoMatchError, ServiceError } from '../js/errors.js';
 
@@ -238,4 +238,24 @@ test('same forecast gives a different tier in Austin vs a northern city (R15)', 
   const north = { name: 'Minneapolis, MN', lat: 44.98, lon: -93.27 };
   const args = { dateKey: '2026-10-16', bundle: bundle(), stations, variation: createVariationStore(), nowMs: NOW };
   assert.notEqual(buildState({ ...args, location: austin }).tier, buildState({ ...args, location: north }).tier);
+});
+
+test('summarizeDays gives one entry per date (and takes no variation store)', () => {
+  const days = summarizeDays({ location: austin, bundle: bundle(), stations, nowMs: NOW });
+  assert.deepEqual(days.map((d) => [d.date, d.status]), [
+    ['2026-10-15', 'ok'], ['2026-10-16', 'ok'], ['2026-10-17', 'no-temperature'],
+  ]);
+  assert.equal(days[0].high, 90);
+  assert.ok(['Cold', 'Mild', 'Hot'].includes(days[0].tier));
+  assert.ok(['Clear', 'Overcast', 'Rain', 'Snow'].includes(days[0].condition));
+  assert.equal(days[2].tier, undefined);
+});
+
+test('summaries agree with the full state for the same date', () => {
+  const variation = createVariationStore();
+  const [today] = summarizeDays({ location: austin, bundle: bundle(), stations, nowMs: NOW });
+  const full = buildState({ location: austin, dateKey: '2026-10-15', bundle: bundle(), stations, variation, nowMs: NOW });
+  assert.equal(today.tier, full.tier);
+  assert.equal(today.condition, full.condition);
+  assert.equal(today.windy, full.windy);
 });

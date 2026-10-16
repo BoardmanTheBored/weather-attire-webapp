@@ -32,6 +32,31 @@
     </footer>
   </main>
 
+  <!-- Location and date sheet: a bottom sheet on phones, a centered dialog on laptops.
+       Native <dialog> traps focus while open and restores it to the header block on close. -->
+  <dialog id="sheet" class="sheet" aria-labelledby="sheet-title">
+    <div class="sheet-top">
+      <h2 id="sheet-title">Location and date</h2>
+      <button id="sheet-close" type="button" class="btn">Close</button>
+    </div>
+
+    <form id="search-form" class="search-form">
+      <label for="search-input">City or ZIP code</label>
+      <div class="search-row">
+        <input id="search-input" type="text" name="q" autocapitalize="off" spellcheck="false" enterkeyhint="search">
+        <button id="search-button" type="submit" class="btn btn-primary">Search</button>
+      </div>
+    </form>
+
+    <button id="use-location" type="button" class="btn btn-wide">Use my location</button>
+    <p id="sheet-message" class="sheet-message" role="status"></p>
+
+    <fieldset id="date-picker" class="date-picker">
+      <legend>Date</legend>
+      <div id="date-options" class="date-options"></div>
+    </fieldset>
+  </dialog>
+
   <!-- Information screen: reached via hash route #/info -->
   <main id="screen-info" class="screen" aria-labelledby="info-title" hidden>
     <a href="#/" class="back-link">&larr; Back</a>

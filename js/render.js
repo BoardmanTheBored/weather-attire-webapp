@@ -114,3 +114,71 @@ export function renderMain(view) {
   renderCharacter(view);
   renderBreakdown(view);
 }
+
+// ---------- Location and date sheet ----------
+
+// dates: ["YYYY-MM-DD", ...]; notice is the inline message (e.g. "No US match found")
+export function renderSheet({ dates, selected, todayKey, notice = '', busy = false }) {
+  $('sheet-message').textContent = notice;
+  $('search-button').disabled = busy;
+  $('use-location').disabled = busy;
+  $('search-button').textContent = busy ? 'Searching…' : 'Search';
+
+  const options = $('date-options');
+  options.replaceChildren();
+  if (dates.length === 0) {
+    options.append(message('Choose a location to see its dates.'));
+    return;
+  }
+  for (const key of dates) {
+    const input = el('input', { attrs: { type: 'radio', name: 'date', value: key } });
+    input.checked = key === selected;
+    const isToday = key === todayKey;
+    const [weekday, ...rest] = formatDate(key).split(', ');
+    options.append(
+      el('label', { className: 'date-chip' }, [
+        input,
+        el('span', { className: 'date-chip-face' }, [
+          el('span', { className: 'date-chip-day', text: isToday ? 'Today' : weekday }),
+          el('span', { text: rest.join(', ') }),
+        ]),
+      ]),
+    );
+  }
+}
+
+export function openSheet() {
+  const sheet = $('sheet');
+  if (!sheet.open) sheet.showModal();
+}
+
+export function closeSheet() {
+  const sheet = $('sheet');
+  if (sheet.open) sheet.close();
+}
+
+// Keeps Tab and Shift+Tab cycling inside the open sheet. The native dialog already keeps focus
+// off the page behind it; this removes the extra stop on the browser's own controls (R13).
+export function trapSheetFocus(event) {
+  if (event.key !== 'Tab') return;
+  const controls = [...$('sheet').querySelectorAll('button, input')].filter((control) => {
+    if (control.disabled) return false;
+    // Only one radio per group is in the tab order: the checked one, or the first if none is.
+    if (control.type !== 'radio') return true;
+    const group = [...$('sheet').querySelectorAll(`input[type="radio"][name="${control.name}"]`)];
+    return control.checked || (!group.some((radio) => radio.checked) && control === group[0]);
+  });
+  if (controls.length === 0) return;
+  const first = controls[0];
+  const last = controls.at(-1);
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
+
+export const readSearchQuery =() => $('search-input').value;
+export const focusSearchField = () => $('search-input').focus();

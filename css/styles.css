@@ -176,3 +176,99 @@ a { color: var(--link); }
   min-height: var(--target);
   min-width: var(--target);
 }
+
+/* ---------- Location and date sheet ---------- */
+.btn {
+  min-height: var(--target);
+  min-width: var(--target);
+  padding: 8px 14px;
+  font: inherit;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn:disabled { cursor: default; opacity: 0.6; }
+.btn-primary { color: #fff; background: var(--text); }
+.btn-wide { width: 100%; }
+
+/* Phone: a sheet anchored to the bottom edge, within thumb reach. */
+.sheet {
+  width: 100%;
+  max-width: 100%;
+  margin: auto 0 0;
+  padding: 16px;
+  color: var(--text);
+  background: var(--bg);
+  border: 3px solid var(--border);
+  border-bottom: 0;
+  border-radius: 16px 16px 0 0;
+}
+.sheet::backdrop { background: rgba(0, 0, 0, 0.55); }
+
+.sheet-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.sheet-top h2 { margin: 0; font-size: 20px; }
+
+.search-form label { display: block; margin-bottom: 4px; font-weight: 700; }
+.search-row { display: flex; gap: 8px; }
+.search-row input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--target);
+  padding: 8px 10px;
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+}
+
+#use-location { margin-top: 10px; }
+
+.sheet-message { min-height: 1.4em; margin: 10px 0; font-weight: 700; }
+
+.date-picker { margin: 0; padding: 0; border: 0; min-width: 0; }
+.date-picker legend { padding: 0; margin-bottom: 6px; font-weight: 700; }
+.date-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); gap: 8px; }
+
+.date-chip { position: relative; display: block; }
+/* The radio covers the chip, invisible but focusable, so the whole chip is the touch target. */
+.date-chip input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.date-chip-face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--target);
+  padding: 6px;
+  text-align: center;
+  line-height: 1.2;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+}
+.date-chip-day { font-weight: 700; }
+/* Selected is shown by a thick border, inverted colors and a check mark: not by color alone. */
+.date-chip input:checked + .date-chip-face { color: #fff; background: var(--text); border-width: 4px; }
+.date-chip input:checked + .date-chip-face .date-chip-day::before { content: "\2713\00a0"; }
+.date-chip input:focus-visible + .date-chip-face { outline: 3px solid var(--link); outline-offset: 2px; }
+
+/* Laptop: the same controls as a centered dialog. */
+@media (min-width: 1024px) {
+  .sheet {
+    width: 480px;
+    margin: auto;
+    border-bottom: 3px solid var(--border);
+    border-radius: 16px;
+  }
+}

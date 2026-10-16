@@ -3,6 +3,9 @@
 Requires Pillow:  pip install pillow
 
 Commands
+  crop     Cut every raw generation to the same box so all layers share one canvas.
+           python scripts/art_tools.py crop in.jpg out.png --box 512 0 896 768
+
   keyout   Make a flat-color background transparent (mannequin, icons).
            python scripts/art_tools.py keyout in.png out.png --color FF00FF --tolerance 60
 
@@ -31,6 +34,16 @@ def hex_to_rgb(value):
     return tuple(int(value[i : i + 2], 16) for i in (0, 2, 4))
 
 
+def crop(args):
+    image = Image.open(args.input).convert("RGB")
+    left, top, right, bottom = args.box
+    if left < 0 or top < 0 or right > image.width or bottom > image.height or right <= left or bottom <= top:
+        sys.exit(f"Box {args.box} does not fit inside the {image.width}x{image.height} image.")
+    out = image.crop(args.box)
+    out.save(args.output)
+    print(f"wrote {args.output} ({out.width}x{out.height}), ratio 1:{out.height / out.width:.2f}")
+
+
 def keyout(args):
     """Distance from the key color decides alpha: 0 inside the tolerance, 255 well outside it."""
     image = load_rgb(args.input)
@@ -38,7 +51,9 @@ def keyout(args):
     key_image = Image.new("RGB", image.size, key)
     diff = ImageChops.difference(image, key_image)
     r, g, b = diff.split()
-    distance = ImageChops.lighter(ImageChops.lighter(r, g), b)  # largest channel difference
+    # Sum of the three channel differences: JPEG noise on a flat background stays small, while a
+    # subject that is close to the key in one channel (wood vs magenta) still scores high.
+    distance = ImageChops.add(ImageChops.add(r, g), b)
     # Linear ramp from tolerance to 2*tolerance gives soft, anti-aliased edges.
     low, high = args.tolerance, args.tolerance * 2
     alpha = distance.point(lambda d: 0 if d <= low else 255 if d >= high else int(255 * (d - low) / (high - low)))
@@ -66,11 +81,21 @@ def overlay(args):
     change = ImageChops.lighter(ImageChops.lighter(r, g), b)
     mask = change.point(lambda d: 255 if d > args.threshold else 0)
 
+    if args.bg:
+        # Drop pixels that are still mostly the generation's background color (pink specks and fringe).
+        key = Image.new("RGB", edited.size, hex_to_rgb(args.bg))
+        kr, kg, kb = ImageChops.difference(edited, key).split()
+        away_from_bg = ImageChops.add(ImageChops.add(kr, kg), kb).point(lambda d: 255 if d > args.bg_distance else 0)
+        mask = ImageChops.multiply(mask, away_from_bg)
+
     # Open removes isolated specks from generator noise; close fills pinholes where the new
     # garment happens to match the mannequin's color.
     size = args.clean * 2 + 1
     mask = mask.filter(ImageFilter.MinFilter(size)).filter(ImageFilter.MaxFilter(size))
     mask = mask.filter(ImageFilter.MaxFilter(size)).filter(ImageFilter.MinFilter(size))
+    if args.shrink:
+        # Edge pixels blend the item with the generation's background color (a pink fringe).
+        mask = mask.filter(ImageFilter.MinFilter(args.shrink * 2 + 1))
     if args.grow:
         mask = mask.filter(ImageFilter.MaxFilter(args.grow * 2 + 1))
     alpha = mask.filter(ImageFilter.GaussianBlur(args.soften)) if args.soften else mask
@@ -121,6 +146,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest="command", required=True)
 
+    c = sub.add_parser("crop", help="crop to a shared canvas box")
+    c.add_argument("input")
+    c.add_argument("output")
+    c.add_argument("--box", type=int, nargs=4, metavar=("LEFT", "TOP", "RIGHT", "BOTTOM"), required=True)
+    c.set_defaults(func=crop)
+
     k = sub.add_parser("keyout", help="make a flat background color transparent")
     k.add_argument("input")
     k.add_argument("output")
@@ -135,6 +166,9 @@ def main():
     o.add_argument("output")
     o.add_argument("--threshold", type=int, default=40, help="channel difference counted as changed (default 40)")
     o.add_argument("--clean", type=int, default=2, help="speck/pinhole cleanup radius in pixels (default 2)")
+    o.add_argument("--bg", help="background color of the generation as hex; pixels near it are dropped (e.g. CF4CB0)")
+    o.add_argument("--bg-distance", type=int, default=110, help="sum of channel differences from --bg kept as subject (default 110)")
+    o.add_argument("--shrink", type=int, default=1, help="trim this many pixels off the edge to drop background fringe (default 1)")
     o.add_argument("--grow", type=int, default=0, help="expand the cutout by this many pixels (default 0)")
     o.add_argument("--soften", type=float, default=0.8, help="edge blur radius (default 0.8, 0 for hard edges)")
     o.set_defaults(func=overlay)

@@ -73,7 +73,9 @@ Ongoing rules: test and fix each checkpoint against `spec.md` before starting th
 
 **Art track (runs in parallel, start now)**
 - [ ] A0. Choose the image-generation tool, read and record its license/terms for commercial-style public use (Developer decision)
+  - Tool chosen 2026-10-16: Google Gemini app, free tier (not AI Studio). **Still open:** the Developer reads the terms and records the wording in `art/README.md`.
 - [ ] A1. Write one style prompt and generate the mannequin; fix it as the reference image and canvas size (result: approved character PNG)
+  - Style prompt, a pilot (mannequin plus one shirt) and prompt templates are in `art/README.md`; `scripts/art_tools.py` extracts transparent layers. Run the pilot before generating all 23.
 - [ ] A2. Generate overlays on the same canvas: 3 shirts, 3 pants, 3 shoes, 2 jackets, 3 hats (result: 14 overlays that line up on the mannequin)
 - [ ] A3. Generate or draw icons: 4 condition icons, Windy overlay, thermometer, umbrella, hydration (result: 8 icons readable in greyscale)
 - [ ] A4. Record the tool, date, and license for the info screen (result: credit text ready)
@@ -126,6 +128,7 @@ Before testing, record the purpose, a few realistic tasks, non-leading prompts, 
 Record material plan changes and why they were made.
 
 - 2026-10-15: Repo made public (GitHub Pages is unavailable on private repos on the free plan). Live URL: https://boardmanthebored.github.io/weather-attire-webapp/. C0 done.
+- 2026-10-16: Art tool chosen: Google Gemini app, free tier, because it is free, edits a reference image (best free route to aligned overlays), and Google states it does not claim ownership of generated content. Fallback if consistency fails: FLUX.1 [schnell] (Apache 2.0) on the Developer's RTX 4060. The canvas ratio is set at the pilot (Gemini may not offer 1:2).
 
 ## Saving transcripts
 

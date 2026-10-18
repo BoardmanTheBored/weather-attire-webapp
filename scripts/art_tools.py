@@ -44,6 +44,57 @@ def crop(args):
     print(f"wrote {args.output} ({out.width}x{out.height}), ratio 1:{out.height / out.width:.2f}")
 
 
+def save_png(image, path):
+    """Save an RGBA image with the color under fully transparent pixels cleared.
+
+    Noise left in invisible pixels (JPEG artifacts) would otherwise stop PNG from compressing them.
+    """
+    clean = Image.new("RGBA", image.size, (0, 0, 0, 0))
+    clean.paste(image, mask=image.getchannel("A").point(lambda v: 255 if v > 0 else 0))
+    clean.save(path, optimize=True)
+
+
+def decontaminate(image, alpha, key):
+    """Remove the background color from partly transparent edge pixels.
+
+    An edge pixel is a mix of subject and background: pixel = a*subject + (1-a)*key. Solving for the
+    subject color stops a pink halo showing when the cutout is placed on another background.
+    """
+    out = image.copy()
+    px = out.load()
+    al = alpha.load()
+    for y in range(out.height):
+        for x in range(out.width):
+            a = al[x, y]
+            if 0 < a < 255:
+                f = a / 255
+                px[x, y] = tuple(max(0, min(255, round((c - (1 - f) * k) / f))) for c, k in zip(px[x, y], key))
+    return out
+
+
+def depink_edges(image, alpha, key, band=3):
+    """In the few pixels next to the cutout edge, remove the key color's tint.
+
+    A mostly-dark outline pixel that is 40% background is still opaque but purple. Within the edge band
+    only, subtract the part of the key color's hue that the pixel has in excess of its green channel
+    (right for magenta-like keys; interior pixels are never touched).
+    """
+    interior = alpha.point(lambda v: 255 if v > 250 else 0).filter(ImageFilter.MinFilter(band * 2 + 1))
+    out = image.copy()
+    px = out.load()
+    al = alpha.load()
+    inner = interior.load()
+    for y in range(out.height):
+        for x in range(out.width):
+            if al[x, y] > 0 and inner[x, y] == 0:
+                r, g, b = px[x, y]
+                excess = min(r, b) - g
+                if excess > 0:
+                    cut = round(excess * 0.8)
+                    px[x, y] = (max(0, r - cut), g, max(0, b - cut))
+    return out
+
+
 def keyout(args):
     """Distance from the key color decides alpha: 0 inside the tolerance, 255 well outside it."""
     image = load_rgb(args.input)
@@ -57,12 +108,12 @@ def keyout(args):
     # Linear ramp from tolerance to 2*tolerance gives soft, anti-aliased edges.
     low, high = args.tolerance, args.tolerance * 2
     alpha = distance.point(lambda d: 0 if d <= low else 255 if d >= high else int(255 * (d - low) / (high - low)))
+    out = depink_edges(decontaminate(image, alpha, key), alpha, key).convert("RGBA")
     if args.defringe:
         # Pull the visible edge in by a pixel so key-colored fringes do not show.
         alpha = alpha.filter(ImageFilter.MinFilter(3))
-    out = image.convert("RGBA")
     out.putalpha(alpha)
-    out.save(args.output)
+    save_png(out, args.output)
     print_report(out, args.output)
 
 
@@ -81,11 +132,14 @@ def overlay(args):
     change = ImageChops.lighter(ImageChops.lighter(r, g), b)
     mask = change.point(lambda d: 255 if d > args.threshold else 0)
 
+    bg_distance = None
     if args.bg:
-        # Drop pixels that are still mostly the generation's background color (pink specks and fringe).
+        # Distance of every pixel from the generation's background color (sum of channel differences).
         key = Image.new("RGB", edited.size, hex_to_rgb(args.bg))
         kr, kg, kb = ImageChops.difference(edited, key).split()
-        away_from_bg = ImageChops.add(ImageChops.add(kr, kg), kb).point(lambda d: 255 if d > args.bg_distance else 0)
+        bg_distance = ImageChops.add(ImageChops.add(kr, kg), kb)
+        # Drop pixels that are still mostly background (pink specks and fringe).
+        away_from_bg = bg_distance.point(lambda d: 255 if d > args.bg_distance else 0)
         mask = ImageChops.multiply(mask, away_from_bg)
 
     # Open removes isolated specks from generator noise; close fills pinholes where the new
@@ -97,12 +151,23 @@ def overlay(args):
         # Edge pixels blend the item with the generation's background color (a pink fringe).
         mask = mask.filter(ImageFilter.MinFilter(args.shrink * 2 + 1))
     if args.grow:
+        # Grow so the item's own outline is kept whole where it nearly coincides with the base's outline.
         mask = mask.filter(ImageFilter.MaxFilter(args.grow * 2 + 1))
+    if bg_distance is not None and args.edge_band:
+        # Only along the edge band, also drop blended pixels (partly background). The interior keeps
+        # every pixel, so a garment color near the background is not eaten from the inside.
+        inner = mask.filter(ImageFilter.MinFilter(args.edge_band * 2 + 1))
+        edge = ImageChops.subtract(mask, inner)
+        blended = bg_distance.point(lambda d: 255 if d < args.edge_bg_distance else 0)
+        mask = ImageChops.subtract(mask, ImageChops.multiply(edge, blended))
+    if bg_distance is not None:
+        # Closing and growing can refill small gaps (between sleeve and torso) with background pixels.
+        mask = ImageChops.multiply(mask, bg_distance.point(lambda d: 255 if d > args.bg_distance else 0))
     alpha = mask.filter(ImageFilter.GaussianBlur(args.soften)) if args.soften else mask
 
     out = edited.convert("RGBA")
     out.putalpha(alpha)
-    out.save(args.output)
+    save_png(out, args.output)
     print_report(out, args.output)
 
     box = mask.getbbox()
@@ -165,11 +230,13 @@ def main():
     o.add_argument("edited")
     o.add_argument("output")
     o.add_argument("--threshold", type=int, default=40, help="channel difference counted as changed (default 40)")
-    o.add_argument("--clean", type=int, default=2, help="speck/pinhole cleanup radius in pixels (default 2)")
+    o.add_argument("--clean", type=int, default=1, help="speck/pinhole cleanup radius in pixels (default 1; larger values chew thin outlines)")
     o.add_argument("--bg", help="background color of the generation as hex; pixels near it are dropped (e.g. CF4CB0)")
     o.add_argument("--bg-distance", type=int, default=110, help="sum of channel differences from --bg kept as subject (default 110)")
-    o.add_argument("--shrink", type=int, default=1, help="trim this many pixels off the edge to drop background fringe (default 1)")
-    o.add_argument("--grow", type=int, default=0, help="expand the cutout by this many pixels (default 0)")
+    o.add_argument("--edge-band", type=int, default=3, help="width in pixels of the edge band cleaned of background blend (default 3, 0 to disable)")
+    o.add_argument("--edge-bg-distance", type=int, default=190, help="in the edge band, pixels closer than this to --bg are dropped (default 190)")
+    o.add_argument("--shrink", type=int, default=0, help="trim this many pixels off the edge before growing (default 0)")
+    o.add_argument("--grow", type=int, default=2, help="expand the cutout by this many pixels so the item's own outline stays whole (default 2)")
     o.add_argument("--soften", type=float, default=0.8, help="edge blur radius (default 0.8, 0 for hard edges)")
     o.set_defaults(func=overlay)
 

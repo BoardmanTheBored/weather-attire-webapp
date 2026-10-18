@@ -13,13 +13,15 @@ const HAT_FILES = { 'sun hat': 'hat-sun', 'rain hood': 'hat-rain', beanie: 'hat-
 export const iconUrl = (name) => `${BASE}/icons/${name}.${EXT}`;
 export const CONDITION_ICONS = { Clear: 'clear', Overcast: 'overcast', Rain: 'rain', Snow: 'snow' };
 
-// Layers drawn over the mannequin, back to front, all on the same 400x800 canvas.
+// Layers drawn over the mannequin, back to front, all on the same canvas.
 export function outfitLayerUrls(state) {
   const { outfitVariation, jacket, hat } = state;
   const layers = [
     `${BASE}/character/mannequin.${EXT}`,
-    `${BASE}/outfit/pants-${outfitVariation.pants}.${EXT}`,
+    // Shoes go under the trousers, as in real life: the cuff falls over the shoe top. It also means no
+    // layer sits between the mannequin and the shoes to cover the outline they share with the ankle.
     `${BASE}/outfit/shoes-${outfitVariation.shoes}.${EXT}`,
+    `${BASE}/outfit/pants-${outfitVariation.pants}.${EXT}`,
     `${BASE}/outfit/shirt-${outfitVariation.shirt}.${EXT}`,
   ];
   if (jacket) layers.push(`${BASE}/outfit/jacket-${jacket}.${EXT}`);

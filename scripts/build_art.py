@@ -33,26 +33,10 @@ BOX = (512, 0, 896, 768)
 OUTFIT = ["shirt-0", "shirt-1", "shirt-2", "pants-0", "pants-1", "pants-2", "shoes-0", "shoes-1", "shoes-2",
           "jacket-light", "jacket-heavy", "hat-sun", "hat-rain", "hat-beanie"]
 ICONS = ["thermometer", "clear", "overcast", "rain", "snow", "windy", "umbrella", "hydration"]
+PANTS_RING = 5  # a trouser hem's outline sits on the mannequin's foot outline for about the outline's thickness
+PANTS_HEM = 0.91  # trousers end at the ankle (about 0.90 of the height); their edits also redraw the feet, which belong to the shoes
 ICON_SIZE = 128
 ICON_PADDING = 0.06  # fraction of the icon's longest side kept as transparent margin
-
-
-def sample_bg(image):
-    """Average of small patches in the four corners, as a hex string."""
-    rgb = image.convert("RGB")
-    w, h = rgb.size
-    patches = [(4, 4), (w - 24, 4), (4, h - 24), (w - 24, h - 24)]
-    total = [0, 0, 0]
-    count = 0
-    for x, y in patches:
-        for dx in range(0, 20, 4):
-            for dy in range(0, 20, 4):
-                r, g, b = rgb.getpixel((x + dx, y + dy))
-                total[0] += r
-                total[1] += g
-                total[2] += b
-                count += 1
-    return "%02X%02X%02X" % tuple(round(t / count) for t in total)
 
 
 def crop_to_canvas(src, dst):
@@ -63,8 +47,8 @@ def build_mannequin():
     dst = OUT / "character" / "mannequin.png"
     crop = CROP_DIR / "mannequin_base.png"
     crop_to_canvas(WORK / "mannequin_base.jpg", crop)
-    bg = sample_bg(Image.open(crop))
-    art_tools.keyout(SimpleNamespace(input=str(crop), output=str(dst), color=bg, tolerance=60, defringe=True))
+    bg = art_tools.sample_bg(Image.open(crop))
+    art_tools.keyout(SimpleNamespace(input=str(crop), output=str(dst), color=bg, edge=3, radius=4, line_tolerance=45))
     return f"mannequin (bg #{bg})"
 
 
@@ -72,19 +56,20 @@ def build_outfit(name):
     crop_base = CROP_DIR / "mannequin_base.png"
     crop_edit = CROP_DIR / f"{name}.png"
     crop_to_canvas(WORK / f"{name}.jpg", crop_edit)
-    bg = sample_bg(Image.open(crop_edit))
+    bg = art_tools.sample_bg(Image.open(crop_edit))
     dst = OUT / "outfit" / f"{name}.png"
     art_tools.overlay(SimpleNamespace(
-        base=str(crop_base), edited=str(crop_edit), output=str(dst), threshold=40, clean=1, grow=2,
-        shrink=0, soften=0.8, bg=bg, bg_distance=110, edge_band=3, edge_bg_distance=190))
+        base=str(crop_base), edited=str(crop_edit), output=str(dst), threshold=30, strong=100, reach=3, ring=PANTS_RING if name.startswith("pants") else 1, min_area=150, min_fraction=0.2,
+        clip_bottom=PANTS_HEM if name.startswith("pants") else None, bg=bg,
+        edge=3, radius=4, line_tolerance=45))
     return f"{name} (bg #{bg})"
 
 
 def build_icon(name):
     src = WORK / f"{name}.jpg"
-    bg = sample_bg(Image.open(src))
+    bg = art_tools.sample_bg(Image.open(src))
     tmp = CROP_DIR / f"{name}_keyed.png"
-    art_tools.keyout(SimpleNamespace(input=str(src), output=str(tmp), color=bg, tolerance=60, defringe=True))
+    art_tools.keyout(SimpleNamespace(input=str(src), output=str(tmp), color=bg, edge=3, radius=4, line_tolerance=45))
     keyed = Image.open(tmp)
     box = keyed.getchannel("A").point(lambda v: 255 if v > 20 else 0).getbbox()
     subject = keyed.crop(box)

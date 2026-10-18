@@ -46,7 +46,9 @@ test('alt text describes the drawn outfit and matches the layers', () => {
   const s = state();
   assert.equal(outfitAltText(s), 'Mannequin wearing a rain hood, a light jacket, a blue shirt, navy pants and sneakers.');
   const layers = outfitLayerUrls(s);
-  assert.equal(layers.length, 6); // mannequin, pants, shoes, shirt, jacket, hat
+  assert.equal(layers.length, 6); // mannequin, shoes, pants, shirt, jacket, hat
+  const order = ['mannequin', 'shoes', 'pants', 'shirt', 'jacket', 'hat'];
+  assert.deepEqual(order.map((name) => layers.findIndex((url) => url.includes(name))), [0, 1, 2, 3, 4, 5], 'back-to-front order');
   assert.ok(layers[0].includes('mannequin'));
   assert.ok(layers.at(-1).includes('hat-rain'));
   assert.equal(outfitLayerUrls(state({ jacket: null, hat: null })).length, 4);

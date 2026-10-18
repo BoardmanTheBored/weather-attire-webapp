@@ -116,6 +116,34 @@ Ongoing rules: test and fix each checkpoint against `spec.md` before starting th
 - [ ] Save all chat transcripts
 - [ ] Complete the debrief
 
+## Verification results (2026-10-17)
+
+Agent-run evidence for "Check every specification requirement", on the live site unless noted. The checklist items stay unticked: the Developer confirms them, and the two checks that need a real person are marked.
+
+| # | Result | Evidence |
+|---|---|---|
+| R1 | Pass | Live: hosts contacted are the site itself, api.weather.gov and nominatim.openstreetmap.org (geocoding only); 56-state sweep and 27 deploy checks, no failed requests. |
+| R2 | Pass | C6 suite (42 checks): typed Search, device location allowed and denied, "No US match found" for Paris, no request while typing, one request per Search. C7: a device in Paris gets "No US match found". |
+| R3 | Pass | Sweep: at 8 locations the strip and picker are exactly 7 consecutive dates starting Today. C6: 7 date chips. |
+| R4 | Pass | C6 and live: one local-storage key; after A then B, a reload opens on B; a failed search keeps the previous location. |
+| R5 | Pass | Sweep, all 56 states: header shows location, date and Current (today) or Forecast (other days); °F on the header, Temperature and Feels like; % and mph on their rows; source line present. |
+| R6 | Pass | Code review: the only DOM writes outside `render.js` are the two screen-visibility toggles for routing; character, icons, sentence, breakdown, reminders and strip are all drawn from `buildState` by `renderMain` and `renderWeek`. C8: choosing a day changes header, sentence and outfit together. |
+| R7 | Pass | Unit tests at PoP 39/40 and heat index 79/80. Sweep, 56 states: umbrella shown if and only if PoP ≥ 40, hydration if and only if heat index ≥ 80. |
+| R8 | Pass | Unit tests: a date's draw is stable on return, cleared on location change, and independent (all 9 shirt × wording pairs and all 9 wording × wording pairs appear over 600 draws). Sweep: 24 revisits of an earlier day showed the same outfit. |
+| R9 | Pass | C7 suite (43 checks): loading, blocked request, HTTP 500, unreadable data, timeout (10.1 s), geocoder down, missing temperature, missing PoP/wind/conditions/icon, empty heat index, denied location, unmatched query; Retry recovers. |
+| R10 | Pass | Info test (every required item present, thresholds match the code), C9 (tap, keyboard, Back, browser back), all 11 external links return 200. |
+| R11 | Targets pass; **one-thumb use is the Developer's check** | Every control is at least 44×44 px on phone and laptop (C11). |
+| R12 | Pass | C8 at 1280, 1024 and 390 px: three columns and the strip on laptop, phone layout otherwise, no horizontal scroll. |
+| R13 | Pass; **real screen reader is the Developer's check** | C11: contrast on 14 states, 3 px focus rings, names, greyscale, reflow, 200% text; keyboard-only completion of every task (C8). Recorded in `spec.md` Revisions. |
+| R14 | Pass | C12: HTTPS, secure context, 27 live checks; the Developer confirmed it works on a real phone and laptop. |
+| R15 | Pass | Unit tests (same forecast, different tier by baseline). Sweep: in all 56 states the shown tier equals the rule applied to the shown "N°F above/below the seasonal normal" (boundary seen live: Minneapolis +7°F is Mild). Info screen names the NCEI normals. |
+
+**Sweep coverage:** Austin, Minneapolis, Seattle, Miami, Denver, Anchorage, Honolulu and San Juan, each for all 7 days. Categories seen live: Mild-Dry 31, Hot-Dry 13, Mild-Rain 11, Cold-Dry 1. Cold-Rain and Hot-Rain did not occur in October weather; they were verified with synthetic states (C5, C10) and unit tests, not live data.
+
+**Observations for the usability test (not defects against the spec):**
+- **Rain icon without an umbrella.** The condition icon comes from the NWS icon code, while "Rain" in the recommendation needs PoP ≥ 40%. So a day can show a Rain icon with no umbrella, jacket or rain hood: Honolulu shows Rain all week at PoP 16–35%, and Miami and San Juan have days like it. This follows the approved rules, but a tester may find it contradictory.
+- **Cold in a warm place.** Austin today shows Cold at a 70°F high because the October normal is 81°F (approved rule, noted in C4).
+
 ## Usability testing
 
 **Draft protocol (to be confirmed by the Developer before testing):**

@@ -95,7 +95,8 @@ Ongoing rules: test and fix each checkpoint against `spec.md` before starting th
   - Art swapped in 2026-10-17 and verified at 390 px and 1280 px (layers align, no failed or placeholder requests). The placeholder folder `assets/placeholders/` was deleted by the Developer and nothing references it.
 - [x] C11. **Accessibility pass:** contrast tool on every text/background pair, greyscale screenshot, 44 px targets, focus order, screen-reader labels. Check: R13 results recorded.
   - Results and the five defects fixed are recorded in `spec.md` Revisions (2026-10-17). The Developer should still check focus order and screen-reader behaviour by hand on a real phone and laptop (Verify and revise).
-- [ ] C12. **Public deploy of the full app** and a pass against R14. Check: URL works over HTTPS on a phone with real device location.
+- [x] C12. **Public deploy of the full app** and a pass against R14. Check: URL works over HTTPS on a phone with real device location.
+  - Live at https://boardmanthebored.github.io/weather-attire-webapp/ (2026-10-17). The Developer confirmed it works on a real phone and laptop; the Agent's automated live pass (27 checks) is recorded in `spec.md` Revisions.
 
 ### Verify and revise
 

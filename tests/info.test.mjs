@@ -25,6 +25,7 @@ test('R10: every required item is on the information screen', () => {
     'saved location': 'local storage',
     'AI art disclosure': 'AI-generated',
     'art tool': 'Gemini',
+    'art licence': 'does not claim ownership',
     'OSM attribution': '© OpenStreetMap contributors',
     ODbL: 'ODbL',
     'Current note': 'nearest hour',

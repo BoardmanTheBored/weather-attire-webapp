@@ -72,13 +72,13 @@ tests/                node --test files for the pure modules
 Ongoing rules: test and fix each checkpoint against `spec.md` before starting the next; commit each working checkpoint; use the approved drawing (`reference/project-3_DrawnLayouts.jpg`) for layout; keep one recommendation state driving every output.
 
 **Art track (runs in parallel, start now)**
-- [ ] A0. Choose the image-generation tool, read and record its license/terms for commercial-style public use (Developer decision)
-  - Tool chosen 2026-10-16: Google Gemini app, free tier (not AI Studio). **Still open:** the Developer reads the terms and records the wording in `art/README.md`.
+- [x] A0. Choose the image-generation tool, read and record its license/terms for commercial-style public use (Developer decision)
+  - Tool chosen 2026-10-16: Google Gemini app, free tier (not AI Studio). Licence wording recorded in `art/README.md` on 2026-10-17 from Google's Terms of Service.
 - [x] A1. Write one style prompt and generate the mannequin; fix it as the reference image and canvas size (result: approved character PNG)
   - Style prompt, a pilot (mannequin plus one shirt) and prompt templates are in `art/README.md`; `scripts/art_tools.py` extracts transparent layers. Run the pilot before generating all 23.
 - [x] A2. Generate overlays on the same canvas: 3 shirts, 3 pants, 3 shoes, 2 jackets, 3 hats (result: 14 overlays that line up on the mannequin)
 - [x] A3. Generate or draw icons: 4 condition icons, Windy overlay, thermometer, umbrella, hydration (result: 8 icons readable in greyscale)
-- [ ] A4. Record the tool, date, and license for the info screen (result: credit text ready)
+- [x] A4. Record the tool, date, and license for the info screen (result: credit text ready)
 
 **Code track**
 - [x] C0. **Skeleton and early deploy:** folder structure, `index.html` with two empty screens, hash routing, GitHub Pages enabled. Check: public HTTPS URL loads; the info route and back button work.
@@ -91,8 +91,8 @@ Ongoing rules: test and fix each checkpoint against `spec.md` before starting th
 - [x] C7. **Loading and error states:** loading, service error with Retry, missing temperature, missing secondary fields, denied location, unmatched or non-US query. Check: trigger each (offline, blocked request, denied permission, bad query, nulled field) and match the spec's message table (R9).
 - [x] C8. **Laptop layout:** three columns, 7-day strip with day selection, centered dialog, footer info link. Check: R12 at 1024 px and 390 px; keyboard-only completion of every task.
 - [x] C9. **Information screen:** creator, NWS, methods and sources (CDC, NWS PoP and heat index, NCEI normals), privacy practices, AI art disclosure and tool/license, OSM attribution, "Current" note. Check: R10, every item present; works by tap and keyboard.
-- [ ] C10. **Swap in real art:** replace placeholders with the generated assets; write alt text from the state (outfit description). Check: overlays align at both sizes; no placeholder remains.
-  - Art swapped in 2026-10-17 and verified at 390 px and 1280 px (layers align, no failed or placeholder requests). **Open:** `assets/placeholders/` is no longer referenced; delete it once the Developer confirms.
+- [x] C10. **Swap in real art:** replace placeholders with the generated assets; write alt text from the state (outfit description). Check: overlays align at both sizes; no placeholder remains.
+  - Art swapped in 2026-10-17 and verified at 390 px and 1280 px (layers align, no failed or placeholder requests). The placeholder folder `assets/placeholders/` was deleted by the Developer and nothing references it.
 - [ ] C11. **Accessibility pass:** contrast tool on every text/background pair, greyscale screenshot, 44 px targets, focus order, screen-reader labels. Check: R13 results recorded.
 - [ ] C12. **Public deploy of the full app** and a pass against R14. Check: URL works over HTTPS on a phone with real device location.
 

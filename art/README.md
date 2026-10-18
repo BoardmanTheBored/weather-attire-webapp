@@ -5,8 +5,8 @@
 **Tool (A0):** Google Gemini app, free tier, image generation and editing ("Nano Banana"). Chosen 2026-10-16.
 
 **License and terms (Developer to read and record before the final art is used):**
-- [x] Read the Gemini Apps terms and Prohibited Use Policy and note the wording on ownership and commercial/public use: ______
-- [x] Note whether downloaded images carry a visible watermark, and the daily limit: ______
+- [x] Read the Gemini Apps terms and Prohibited Use Policy and note the wording on ownership and commercial/public use: Google's current [Terms of Service](https://policies.google.com/terms) say "Some of our services allow you to generate original content. Google won't claim ownership over that content." Conditions: do not use the generated content to develop machine-learning models, and do not mislead others into thinking generative AI content was created by a human (the information screen discloses the art as AI-generated). Developer's reading: images generated with Gemini are free to use. Checked by the Agent 2026-10-17.
+- [x] Note whether downloaded images carry a visible watermark, and the daily limit: no visible watermark on any of the 23 downloads (Agent's observation of the raw images); daily limit not recorded. Any invisible watermark (SynthID) is not verified.
 - [x] Date the assets were generated: 2026-10-16
 
 What the Agent verified on 2026-10-16: the [Gemini API terms](https://ai.google.dev/gemini-api/terms) say "Google won't claim ownership over that content"; the [Gemini Apps help page](https://support.google.com/gemini/answer/14286560?hl=en&p=generate_images) tells users to follow the Prohibited Use Policy and use discretion before publishing. It did not confirm commercial use, watermarks, or limits for the app. Use the Gemini app, not Google AI Studio (its terms are written for professional or business use).

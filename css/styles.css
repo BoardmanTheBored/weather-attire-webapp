@@ -13,7 +13,7 @@
 body {
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 16px;
+  font-size: 1rem;
   background: var(--bg);
   color: var(--text);
   line-height: 1.4;
@@ -41,9 +41,9 @@ body {
 
 /* Information screen: one readable column on phone and laptop. */
 #screen-info { padding: 16px; }
-.info { width: 100%; max-width: 44rem; margin: 0 auto; font-size: 17px; line-height: 1.55; }
-.info h1 { margin: 8px 0 12px; font-size: 28px; }
-.info h2 { margin: 28px 0 8px; font-size: 21px; }
+.info { width: 100%; max-width: 44rem; margin: 0 auto; font-size: 1.0625rem; line-height: 1.55; }
+.info h1 { margin: 8px 0 12px; font-size: 1.75rem; }
+.info h2 { margin: 28px 0 8px; font-size: 1.3125rem; }
 .info p { margin: 0 0 12px; }
 .info ul { margin: 0; padding-left: 22px; }
 .info li { margin-bottom: 10px; }
@@ -66,6 +66,7 @@ a { color: var(--link); }
 }
 
 .header-icons {
+  order: -1; /* left of the location block on phones; the page lists the block first */
   display: flex;
   gap: 6px;
   margin: 0;
@@ -78,7 +79,7 @@ a { color: var(--link); }
   flex-direction: column;
   align-items: center;
   min-width: 48px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   line-height: 1.2;
 }
@@ -103,9 +104,9 @@ a { color: var(--link); }
   cursor: pointer;
 }
 
-.header-location { grid-area: loc; font-weight: 700; font-size: 18px; overflow-wrap: anywhere; }
-.header-date { grid-area: date; font-size: 14px; }
-.header-temp { grid-area: temp; font-weight: 800; font-size: 28px; }
+.header-location { grid-area: loc; font-weight: 700; font-size: 1.125rem; overflow-wrap: anywhere; }
+.header-date { grid-area: date; font-size: 0.875rem; }
+.header-temp { grid-area: temp; font-weight: 800; font-size: 1.75rem; }
 
 /* ---------- Body: character left, Weather Breakdown right ---------- */
 .body {
@@ -133,7 +134,7 @@ a { color: var(--link); }
   height: 100%;
 }
 
-.recommendation { margin: 8px 0 0; font-size: 14px; }
+.recommendation { margin: 8px 0 0; font-size: 0.875rem; }
 
 .breakdown {
   min-width: 0;
@@ -143,14 +144,14 @@ a { color: var(--link); }
   padding: 10px;
 }
 
-.breakdown h2 { margin: 0 0 8px; font-size: 18px; }
+.breakdown h2 { margin: 0 0 8px; font-size: 1.125rem; overflow-wrap: anywhere; }
 
 .status-message { margin: 0; font-weight: 600; }
 .retry { margin-top: 12px; }
 
 .rows { margin: 0; }
 .row { margin-bottom: 8px; }
-.row dt { font-size: 14px; font-weight: 700; }
+.row dt { font-size: 0.875rem; font-weight: 700; overflow-wrap: anywhere; }
 .row dd { margin: 0; overflow-wrap: anywhere; }
 
 .reminders { list-style: none; margin: 12px 0 0; padding: 0; }
@@ -167,7 +168,7 @@ a { color: var(--link); }
 }
 .reminder img { width: 32px; height: 32px; flex: none; }
 
-.source { margin: 12px 0 0; font-size: 14px; }
+.source { margin: 12px 0 0; font-size: 0.875rem; }
 
 /* ---------- Footer, in thumb reach ---------- */
 .footer {
@@ -186,6 +187,20 @@ a { color: var(--link); }
   align-items: center;
   min-height: var(--target);
   min-width: var(--target);
+}
+
+/* ---------- Large text on a small screen ----------
+   A container query in rem, so it follows the root font size however the user raises it (browser
+   font-size setting or zoom of text only). At the default size a 390 px phone is 24.4rem wide and
+   keeps the two-column layout from the drawing; from about 110% text up, or on a 320 px screen
+   (20rem), two columns are too narrow for the words, so everything stacks. */
+#screen-main { container-type: inline-size; }
+@container (max-width: 22rem) {
+  .header { flex-wrap: wrap; }
+  .header-block { flex: 1 1 100%; }
+  .header-icons { order: 0; }
+  .body { grid-template-columns: minmax(0, 1fr); }
+  .character { max-width: 16rem; margin-inline: auto; }
 }
 
 /* ---------- Location and date sheet ---------- */
@@ -220,7 +235,7 @@ a { color: var(--link); }
 .sheet::backdrop { background: rgba(0, 0, 0, 0.55); }
 
 .sheet-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
-.sheet-top h2 { margin: 0; font-size: 20px; }
+.sheet-top h2 { margin: 0; font-size: 1.25rem; }
 
 .search-form label { display: block; margin-bottom: 4px; font-weight: 700; }
 .search-row { display: flex; gap: 8px; }
@@ -315,7 +330,7 @@ a { color: var(--link); }
     width: auto;
     margin: 0 auto;
   }
-  .recommendation { font-size: 16px; text-align: center; }
+  .recommendation { font-size: 1rem; text-align: center; }
 
   /* Middle column: location, date and temperature, then the thermometer and weather icons stacked. */
   .header {
@@ -329,9 +344,9 @@ a { color: var(--link); }
     padding: 0 16px;
   }
   .header-block { order: 1; flex: none; grid-template-columns: 1fr; grid-template-areas: "loc" "date" "temp"; row-gap: 4px; }
-  .header-temp { font-size: 40px; }
+  .header-temp { font-size: 2.5rem; }
   .header-icons { order: 2; flex-direction: column; align-items: center; gap: 16px; }
-  .header-icons .icon-item { font-size: 16px; }
+  .header-icons .icon-item { font-size: 1rem; }
   .header-icons .icon-item img { width: 72px; height: 72px; }
 
   .week-strip {
@@ -355,12 +370,12 @@ a { color: var(--link); }
     cursor: pointer;
   }
   .week-day-name { font-weight: 700; }
-  .week-day-date { font-size: 14px; }
+  .week-day-date { font-size: 0.875rem; }
   .week-icons { display: flex; gap: 8px; margin: 0; padding: 0; list-style: none; }
-  .week-icons .icon-item { min-width: 0; font-size: 13px; }
+  .week-icons .icon-item { min-width: 0; font-size: 0.8125rem; }
   .week-icons .icon-item img { width: 32px; height: 32px; }
-  .week-high { font-weight: 800; font-size: 18px; }
-  .week-none { font-size: 14px; }
+  .week-high { font-weight: 800; font-size: 1.125rem; }
+  .week-none { font-size: 0.875rem; }
   /* Selected day: thick border, inverted chip colors and a check mark, not color alone. */
   .week-day[aria-pressed="true"] { color: #fff; background: var(--text); border-width: 4px; }
   /* The icons are full-color art with dark outlines, so they get a white backing on the dark chip. */

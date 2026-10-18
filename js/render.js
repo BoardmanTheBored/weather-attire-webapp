@@ -19,8 +19,8 @@ function el(tag, { className, text, attrs } = {}, children = []) {
 }
 
 // An icon is always paired with a text label so nothing depends on the picture or its color (R13).
-const labeledIcon = (iconName, label, className) =>
-  el('li', { className: `icon-item ${className ?? ''}` }, [
+const labeledIcon = (iconName, label, className, tag = 'li') =>
+  el(tag, { className: `icon-item ${className ?? ''}` }, [
     el('img', { attrs: { src: iconUrl(iconName), alt: '', width: 40, height: 40 } }),
     el('span', { text: label }),
   ]);
@@ -44,7 +44,8 @@ function renderHeader(view) {
     if (state.windy) icons.append(labeledIcon('windy', 'Windy'));
   }
   block.append(...parts);
-  block.setAttribute('aria-label', location ? `${name}, ${dateKey ? formatDate(dateKey) : ''}. Change location or date` : 'Choose a location');
+  // The button's name is its visible text plus a hint, so speech-input users can say what they see (WCAG 2.5.3).
+  if (location) block.append(el('span', { className: 'visually-hidden', text: '. Change location or date' }));
 }
 
 function message(text, className = 'status-message') {
@@ -134,9 +135,10 @@ export function renderWeek({ days, selected, todayKey }) {
     const summary = ok ? `${day.tier}, ${day.condition}, high ${day.high}°F` : 'no temperature forecast';
     const details = ok
       ? [
-          el('ul', { className: 'week-icons' }, [
-            labeledIcon('thermometer', day.tier),
-            labeledIcon(CONDITION_ICONS[day.condition], day.condition),
+          // Spans, not a list: a button may only contain inline content.
+          el('span', { className: 'week-icons' }, [
+            labeledIcon('thermometer', day.tier, '', 'span'),
+            labeledIcon(CONDITION_ICONS[day.condition], day.condition, '', 'span'),
           ]),
           el('span', { className: 'week-high', text: `${day.high}°F` }),
         ]
@@ -150,7 +152,8 @@ export function renderWeek({ days, selected, todayKey }) {
             type: 'button',
             'data-date': day.date,
             'aria-pressed': String(day.date === selected),
-            'aria-label': `${formatDate(day.date)}: ${summary}`,
+            // Starts with what the button shows ("Today" or the weekday) so the name contains its visible text.
+            'aria-label': `${day.date === todayKey ? 'Today, ' : ''}${formatDate(day.date)}: ${summary}`,
           },
         },
         [

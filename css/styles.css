@@ -361,8 +361,9 @@ a { color: var(--link); }
   .week-icons .icon-item img { width: 32px; height: 32px; }
   .week-high { font-weight: 800; font-size: 18px; }
   .week-none { font-size: 14px; }
-  /* Selected day: thick border, inverted colors and a check mark, not color alone. */
+  /* Selected day: thick border, inverted chip colors and a check mark, not color alone. */
   .week-day[aria-pressed="true"] { color: #fff; background: var(--text); border-width: 4px; }
-  .week-day[aria-pressed="true"] .icon-item img { filter: invert(1); }
+  /* The icons are full-color art with dark outlines, so they get a white backing on the dark chip. */
+  .week-day[aria-pressed="true"] .icon-item img { background: #fff; border-radius: 6px; padding: 2px; }
   .week-day[aria-pressed="true"] .week-day-name::before { content: "\2713\00a0"; }
 }

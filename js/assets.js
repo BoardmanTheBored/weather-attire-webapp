@@ -1,11 +1,11 @@
-// Maps recommendation state to art files and names. Placeholders until checkpoint C10 swaps in the
-// generated art (then only BASE, the file extension, and the NAME lists change).
-const BASE = 'assets/placeholders';
-const EXT = 'svg';
+// Maps recommendation state to art files and names. The art is built by scripts/build_art.py (see
+// art/README.md); the NAME lists below must describe what was actually generated.
+const BASE = 'assets/art';
+const EXT = 'png';
 
 // Names used in the written recommendation and alt text; index matches the variation draw (0-2).
 export const SHIRT_NAMES = ['red', 'blue', 'green'];
-export const PANTS_NAMES = ['navy', 'tan', 'grey'];
+export const PANTS_NAMES = ['navy', 'khaki', 'grey'];
 export const SHOE_NAMES = ['sneakers', 'loafers', 'canvas shoes'];
 
 const HAT_FILES = { 'sun hat': 'hat-sun', 'rain hood': 'hat-rain', beanie: 'hat-beanie' };

@@ -80,3 +80,22 @@ test('each reminder has 3 distinct wordings and the state picks one', () => {
   assert.equal(reminderText(state(), 'umbrella'), REMINDER_WORDINGS.umbrella[2]);
   assert.equal(reminderText(state(), 'hydration'), REMINDER_WORDINGS.hydration[0]);
 });
+
+// Every picture the app can ask for must exist on disk, and none may come from the placeholder folder.
+import { existsSync } from 'node:fs';
+import { CONDITION_ICONS, iconUrl } from '../js/assets.js';
+
+test('every art file the app can request exists, and none is a placeholder', () => {
+  const root = new URL('../', import.meta.url);
+  const urls = new Set([iconUrl('thermometer'), iconUrl('windy'), iconUrl('umbrella'), iconUrl('hydration')]);
+  for (const icon of Object.values(CONDITION_ICONS)) urls.add(iconUrl(icon));
+  for (const shirt of [0, 1, 2]) for (const pants of [0, 1, 2]) for (const shoes of [0, 1, 2]) {
+    for (const jacket of [null, 'light', 'heavy']) for (const hat of [null, 'sun hat', 'rain hood', 'beanie']) {
+      outfitLayerUrls({ outfitVariation: { shirt, pants, shoes }, jacket, hat }).forEach((url) => urls.add(url));
+    }
+  }
+  assert.equal(urls.size, 23 + 0, 'the app uses exactly the 23 generated assets');
+  const missing = [...urls].filter((url) => !existsSync(new URL(url, root)));
+  assert.deepEqual(missing, [], 'missing files');
+  assert.ok([...urls].every((url) => url.startsWith('assets/art/') && url.endsWith('.png')), 'all from assets/art as PNG');
+});

@@ -59,7 +59,7 @@ function renderCharacter(view) {
   if (state?.status !== 'ok') return;
 
   const figure = el('div', { className: 'character', attrs: { role: 'img', 'aria-label': outfitAltText(state) } });
-  figure.append(...outfitLayerUrls(state).map((src) => el('img', { attrs: { src, alt: '', width: 400, height: 800 } })));
+  figure.append(...outfitLayerUrls(state).map((src) => el('img', { attrs: { src, alt: '', width: 384, height: 768 } })));
   area.append(figure, el('p', { className: 'recommendation', text: recommendationSentence(state) }));
 }
 

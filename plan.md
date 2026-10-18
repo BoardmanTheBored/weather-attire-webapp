@@ -104,7 +104,8 @@ Ongoing rules: test and fix each checkpoint against `spec.md` before starting th
 - [ ] Test multiple locations, current and forecast dates, recommendation categories, outfit and reminder variations, and failure states
 - [ ] Verify that eligible outfit and reminder variations are selected independently rather than as fixed pairs
 - [ ] Verify that returning to a previously selected date shows the same variations
-- [ ] Test the deployed app, independently of the local version, on a real phone and a laptop, including both screens, accessibility, and one-handed controls
+- [x] Test the deployed app, independently of the local version, on a real phone and a laptop, including both screens, accessibility, and one-handed controls
+  - Confirmed by the Developer on 2026-10-17: works on a real phone and laptop; one-handed use and accessibility fine.
 - [ ] Prepare the usability test below
 - [ ] Test with three peers and record each session
 - [ ] Add the chosen improvement to this checklist, and update `spec.md` if the intended result changes
@@ -118,7 +119,7 @@ Ongoing rules: test and fix each checkpoint against `spec.md` before starting th
 
 ## Verification results (2026-10-17)
 
-Agent-run evidence for "Check every specification requirement", on the live site unless noted. The checklist items stay unticked: the Developer confirms them, and the two checks that need a real person are marked.
+Agent-run evidence for "Check every specification requirement", on the live site unless noted. R11 and R13 include the Developer's own device checks. The Developer ticks the checklist items below.
 
 | # | Result | Evidence |
 |---|---|---|
@@ -132,9 +133,9 @@ Agent-run evidence for "Check every specification requirement", on the live site
 | R8 | Pass | Unit tests: a date's draw is stable on return, cleared on location change, and independent (all 9 shirt × wording pairs and all 9 wording × wording pairs appear over 600 draws). Sweep: 24 revisits of an earlier day showed the same outfit. |
 | R9 | Pass | C7 suite (43 checks): loading, blocked request, HTTP 500, unreadable data, timeout (10.1 s), geocoder down, missing temperature, missing PoP/wind/conditions/icon, empty heat index, denied location, unmatched query; Retry recovers. |
 | R10 | Pass | Info test (every required item present, thresholds match the code), C9 (tap, keyboard, Back, browser back), all 11 external links return 200. |
-| R11 | Targets pass; **one-thumb use is the Developer's check** | Every control is at least 44×44 px on phone and laptop (C11). |
+| R11 | Pass | Every control is at least 44×44 px on phone and laptop (C11). The Developer confirmed one-handed use on a real phone is fine (2026-10-17). |
 | R12 | Pass | C8 at 1280, 1024 and 390 px: three columns and the strip on laptop, phone layout otherwise, no horizontal scroll. |
-| R13 | Pass; **real screen reader is the Developer's check** | C11: contrast on 14 states, 3 px focus rings, names, greyscale, reflow, 200% text; keyboard-only completion of every task (C8). Recorded in `spec.md` Revisions. |
+| R13 | Pass | The Developer confirmed the real-device accessibility check is fine (2026-10-17). C11: contrast on 14 states, 3 px focus rings, names, greyscale, reflow, 200% text; keyboard-only completion of every task (C8). Recorded in `spec.md` Revisions. |
 | R14 | Pass | C12: HTTPS, secure context, 27 live checks; the Developer confirmed it works on a real phone and laptop. |
 | R15 | Pass | Unit tests (same forecast, different tier by baseline). Sweep: in all 56 states the shown tier equals the rule applied to the shown "N°F above/below the seasonal normal" (boundary seen live: Minneapolis +7°F is Mild). Info screen names the NCEI normals. |
 

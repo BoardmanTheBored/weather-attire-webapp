@@ -100,10 +100,10 @@ Ongoing rules: test and fix each checkpoint against `spec.md` before starting th
 
 ### Verify and revise
 
-- [ ] Check every specification requirement
-- [ ] Test multiple locations, current and forecast dates, recommendation categories, outfit and reminder variations, and failure states
-- [ ] Verify that eligible outfit and reminder variations are selected independently rather than as fixed pairs
-- [ ] Verify that returning to a previously selected date shows the same variations
+- [x] Check every specification requirement
+- [x] Test multiple locations, current and forecast dates, recommendation categories, outfit and reminder variations, and failure states
+- [x] Verify that eligible outfit and reminder variations are selected independently rather than as fixed pairs
+- [x] Verify that returning to a previously selected date shows the same variations
 - [x] Test the deployed app, independently of the local version, on a real phone and a laptop, including both screens, accessibility, and one-handed controls
   - Confirmed by the Developer on 2026-10-17: works on a real phone and laptop; one-handed use and accessibility fine.
 - [ ] Prepare the usability test below

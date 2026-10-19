@@ -1,0 +1,336 @@
+commit 971ea3397615ee556620fe224350981d71add101
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-18 19:02:54 -0500
+
+Add debrief protocol and debrief transcript; mark verification tasks done in plan
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 6206f41c72000f162fd75f00754ad2fcb5399059
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-17 21:25:09 -0500
+
+Save build conversation transcript
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 015a642bf48895bef1d7b0bab868e0d4945cb0f4
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-17 21:23:10 -0500
+
+Record Developer's real-device confirmation for R11 and R13
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit e0fc26521439e8cbdd954a6e881ac6f71a1a00c6
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-17 21:21:33 -0500
+
+Record requirement-by-requirement verification (R1-R15) with a 56-state live sweep
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit a8307c4db18d09e35848ae23b48ed02581218090
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-17 21:18:34 -0500
+
+C12: record live deploy results (R14)
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 8216801ee193764a8b8a0d4926a0b02b88b34cb4
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-17 20:50:30 -0500
+
+C11: accessibility pass; names contain visible text, rem fonts, stacked layout for large text
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit c453505e777494998764bed4e6f590762162cddf
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-17 20:42:43 -0500
+
+Record Gemini licence wording; credit it on the info screen; remove placeholder art
+
+Closes art track A0-A4 and C10. Placeholder folder was deleted by the Developer.
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 063b22bf275ed2636306b0161f5d735896bc6ce8
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-17 20:16:24 -0500
+
+C10: swap in the generated art; khaki pants name; strip icon backing; art credit
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 842344ae64d9feec95c09da2b11bfae7ea12ac9d
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-17 20:06:07 -0500
+
+Art: rebuild all layers with exact-change extraction and edge matting
+
+Replaces the shrink/grow/blur mask that cut outline strokes and left magenta
+(gap between jacket sleeve and torso). Overlays are now exactly the changed
+pixels with true edge transparency; shoes are drawn under pants; pants stop
+at the hem. README documents the method and its known limits.
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 245b94882b68ec39e6218cc19eeab3a3c024863e
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-17 19:46:56 -0500
+
+Art: add regenerated windy icon (all 23 assets now built)
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit f78085c45abeba2d8cc670443db76b28ba809bdb
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-17 19:44:04 -0500
+
+Restore round 2 art README after a stale save overwrote it; keep Developer's checkbox edits; document batch build
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit b602229648c8575db17de99407e7e686f9c6eedf
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-17 19:43:26 -0500
+
+Art: 22 final assets built from Gemini flat-style generations; batch build script
+
+windy.png is excluded until regenerated.
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 0bbb9b22bd2dbcbfbc53ffd75798efeae0b5bcb3
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-16 14:23:45 -0500
+
+Art: round 2 prompts for flat illustrated style, full list of 23
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 0f516fd7d21ea9fc659146dd2a31527ec77d3257
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-16 14:19:50 -0500
+
+Art tools: crop command, stronger keyout, bg fringe removal; record pilot result
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 87a35b568a5eecb6fe211074dfd9827cfe624c92
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-16 14:11:12 -0500
+
+Art track: choose Gemini, add art workflow guide and art_tools helper
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 748500d00cec0cb2c7743b37a966be3c00de86cc
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-15 20:51:46 -0500
+
+C9: information screen with creator, sources, methods, privacy, art and OSM credits
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 4794c775f82919ebdc91fc9095035516dfea24cf
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-15 20:45:48 -0500
+
+C8: laptop layout with three columns, 7-day strip, centered dialog
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit db7e7296ec9ddecec0080783159350ad57b5c566
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-15 20:39:45 -0500
+
+C7: loading and error states with Retry, spec message wording
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 461411fbde6b411d5c6dbfa3348a7ab9fa625ef3
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-15 20:35:24 -0500
+
+C6: location and date sheet with focus trap, search, device location, 7-day picker
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 586d9e98a62df76d6fc1db46ed6ca1ce67096c58
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-15 20:30:28 -0500
+
+C5: phone main screen on placeholder art, rendered from the state object
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit e4bf4d95179b04498c0cce4fddc1f23de820542d
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-15 20:27:08 -0500
+
+Spec: label Feels like row by extreme used (approved)
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 3db44f426fe3656f801b7fe51d4c2efbe36fbc80
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-15 20:24:41 -0500
+
+C4: data layer (nws, geocode, storage, state) with tests and live state printer
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 120e8fb90455a13bdc9cd639e6f361f6c6b2f503
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-15 20:19:55 -0500
+
+C3: rules engine and session variation with tests
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 6dbb22a2908c2ee8c1d7d51d5025588ff3e1444f
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-15 20:17:51 -0500
+
+C2: NCEI normals build script, bundled normals.json, baseline.js with tests
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 9eff133b3996fb155d91cc53e813875f20ec5f0a
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-15 20:15:17 -0500
+
+Record approved C1 decisions; mark C1 done
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit afa7056c6ff9e1307272d60b108c452e7d1d1e19
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-15 20:11:56 -0500
+
+C1: add NWS live data check script and record findings in spec
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 9322a4cf523d828064d993ba30400ebcc5450406
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-15 20:10:04 -0500
+
+Mark C0 done; record public repo and Pages URL
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 10421c2e80910e5547d5e57dcc1be4a64f844069
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-15 20:04:37 -0500
+
+Add C0 skeleton: two screens, hash routing; mark approvals
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 064b33d1b13360804ae60e142df0028f7ae541b5
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-05 15:18:26 -0500
+
+Add implementation plan and planning transcript
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 838c43e22c879df502b8c1d56acdc99785a0f163
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-04 22:35:16 -0500
+
+Add approved spec, phone/laptop drawings, and spec transcript
+
+Drop UV/sunscreen (NWS has no UV), switch seasonal baseline to NCEI
+normals, and record the revisions in research.md.
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+----------------------------------------
+commit a9e9c0c5d24ad28a08021219882d03fa4b7e751f
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-04 21:10:39 -0500
+
+Save research conversation transcript
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 5c89dabf04f20015e58803e8551974d4742040da
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-04 21:07:50 -0500
+
+Finalize research.md: screen structure, deployment, icon set, and approval fixes
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+----------------------------------------
+commit a262e47669885ce9fd4628bc9b25fbb94c16f367
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-04 20:55:07 -0500
+
+Add weather, accessibility, privacy, and artwork research to research.md
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 2ca8c5fd9e30d8d8c1e7a36c7dabbd2f1c02043b
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-10-04 20:02:18 -0500
+
+Add reference images and observations to research.md
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 8b6d85f27d7232a597ad41eae97dccbec4f2b0b6
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-09-28 16:43:51 -0500
+
+Add context of use and user stories to research.md
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+----------------------------------------
+commit 308925e53cf8edc2c2cd822d0437a37397905936
+Author: BoardmanTheBored <187445354+BoardmanTheBored@users.noreply.github.com>
+Date:   2026-09-28 16:17:25 -0500
+
+Initial commit from project-3-template
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+----------------------------------------
